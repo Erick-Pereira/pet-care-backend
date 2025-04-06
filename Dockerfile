@@ -5,8 +5,11 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY . .
-RUN dotnet restore
-RUN dotnet publish -c Release -o /app/publish
+RUN ls -la /src # Depuração para verificar o conteúdo do diretório
+WORKDIR /src/WebApi
+RUN dotnet restore /src/WebApi/pet-care-backend.sln
+
+RUN dotnet publish /src/WebApi/WebApi.csproj -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
