@@ -123,24 +123,24 @@ namespace DAL.Impl
             }
         }
 
-        public async Task<Response> Update(User Item)
+        public async Task<Response> Update(User item)
         {
-            var user = await _db.User.FindAsync(Item.Id);
+            var user = await _db.User.FindAsync(item.Id);
             if (user == null)
             {
-                _logger.LogWarning("Update failed: User {UserId} not found.", Item.Id);
+                _logger.LogWarning("Update failed: User {UserId} not found.", item.Id);
                 return ResponseFactory.CreateInstance().CreateFailedResponseNotFoundId();
             }
             try
             {
-                _db.User.Update(Item);
+                _db.User.Update(item);
                 await _db.SaveChangesAsync();
-                _logger.LogInformation("User {UserId} updated successfully.", Item.Id);
+                _logger.LogInformation("User {UserId} updated successfully.", item.Id);
                 return ResponseFactory.CreateInstance().CreateSuccessResponse();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error updating user {UserId}.", Item.Id);
+                _logger.LogError(ex, "Error updating user {UserId}.", item.Id);
                 return ResponseFactory.CreateInstance().CreateFailedResponse(ex);
             }
         }
