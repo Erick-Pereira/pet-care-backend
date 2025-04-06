@@ -3,7 +3,7 @@ using Entities;
 
 namespace DAL.Interfaces
 {
-    public interface IUserDAL : ICRUD<User>
+    public interface IAddressDAL : ICRUD<Address>
     {
     }
 }

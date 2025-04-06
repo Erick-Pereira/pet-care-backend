@@ -8,11 +8,7 @@
 
         public static ResponseFactory CreateInstance()
         {
-            if (_factory == null)
-            {
-                _factory = new ResponseFactory();
-            }
-            return _factory;
+            return _factory ??= new ResponseFactory();
         }
 
         private ResponseFactory()
@@ -20,27 +16,27 @@
 
         #endregion Singleton
 
-        #region Responses
+        #region General Responses
 
-        //Success
+        // Success Responses
         public Response CreateSuccessResponse()
         {
             return new Response("Operation performed successfully.", true);
         }
 
-        public Response CreateSuccessResponse(string mensagem)
+        public Response CreateSuccessResponse(string message)
         {
-            return new Response()
+            return new Response
             {
                 Success = true,
-                Message = mensagem
+                Message = message
             };
         }
 
-        //Failed
-        public Response CreateFailedResponse(string mensagem, Exception? ex = null)
+        // Failure Responses
+        public Response CreateFailedResponse(string message, Exception? ex = null)
         {
-            return new Response(mensagem, false, ex);
+            return new Response(message, false, ex);
         }
 
         public Response CreateFailedResponse(Exception? ex = null)
@@ -50,19 +46,10 @@
 
         public Response CreateFailedResponseZeroRowsUpdatedOnDatabase()
         {
-            return new Response()
+            return new Response
             {
                 Success = false,
                 Message = "No records have been changed for the record in question."
-            };
-        }
-
-        public static Response CreateFailedPermissionResponse()
-        {
-            return new Response()
-            {
-                Success = false,
-                Message = "Permission not granted for the operation."
             };
         }
 
@@ -71,11 +58,20 @@
             return new Response("Not found Id.", false);
         }
 
-        #endregion Responses
+        public static Response CreateFailedPermissionResponse()
+        {
+            return new Response
+            {
+                Success = false,
+                Message = "Permission not granted for the operation."
+            };
+        }
 
-        #region SingleResponses
+        #endregion General Responses
 
-        //Success
+        #region Single Responses
+
+        // Success Single Responses
         public SingleResponse<T> CreateSuccessSingleResponse<T>(T item)
         {
             return new SingleResponse<T>("Data collected successfully", true, item);
@@ -83,37 +79,37 @@
 
         public static SingleResponse<T> CreateSuccessSingleResponse<T>(string message)
         {
-            return new SingleResponse<T>()
+            return new SingleResponse<T>
             {
                 Success = true,
                 Message = message
             };
         }
 
-        //Failed
-        public SingleResponse<T> CreateFailedSingleResponse<T>(string mensagem, Exception? ex = null)
+        // Failure Single Responses
+        public SingleResponse<T> CreateFailedSingleResponse<T>(string message, Exception? ex = null)
         {
-            return new SingleResponse<T>()
+            return new SingleResponse<T>
             {
                 Success = false,
-                Message = mensagem,
-                Exception = ex,
+                Message = message,
+                Exception = ex
             };
         }
 
         public SingleResponse<T> CreateFailedSingleResponse<T>(Exception? ex = null)
         {
-            return new SingleResponse<T>()
+            return new SingleResponse<T>
             {
                 Success = false,
                 Message = "Operation failed.",
-                Exception = ex,
+                Exception = ex
             };
         }
 
         public SingleResponse<T> CreateFailedSingleResponseNotFoundItem<T>(Exception? ex = null)
         {
-            return new SingleResponse<T>()
+            return new SingleResponse<T>
             {
                 Success = false,
                 Message = "Item not found.",
@@ -121,41 +117,37 @@
             };
         }
 
-        /*
-                 public SingleResponseWToken<T> CreateSuccessSingleResponseWToken<T>(string token, T? item, Exception? ex = null)
+        public SingleResponse<T> CreateItemResponse<T>(string message, bool success, T item)
         {
-            return new SingleResponseWToken<T>("Data collected successfully", true, item, token, ex);
-        }
-
-          public SingleResponseWToken<T> CreateFailedSingleResponseWToken<T>(String message, Exception? ex = null)
-        {
-            return new SingleResponseWToken<T>()
+            return new SingleResponse<T>
             {
-                HasSuccess = false,
+                Success = success,
                 Message = message,
-                Exception = ex,
+                Item = item
             };
         }
-        public SingleResponseWToken<T> CreateFailedSingleResponseWToken<T>(Exception? ex = null)
-        {
-            return new SingleResponseWToken<T>()
-            {
-                HasSuccess = false,
-                Message = "Operation failed.",
-                Exception = ex,
-            };
-        }*/
 
-        #endregion SingleResponses
+        #endregion Single Responses
 
-        #region DataResponses
+        #region Data Responses
 
+        // Success Data Responses
         public DataResponse<T> CreateSuccessDataResponse<T>(string message)
         {
-            return new DataResponse<T>()
+            return new DataResponse<T>
             {
                 Success = true,
                 Message = message
+            };
+        }
+
+        public DataResponse<T> CreateSuccessDataResponse<T>(List<T> data)
+        {
+            return new DataResponse<T>
+            {
+                Success = true,
+                Message = "Operation performed successfully.",
+                Data = data
             };
         }
 
@@ -163,20 +155,21 @@
         {
             if (data == null || data.Count == 0)
             {
-                return new DataResponse<T>()
+                return new DataResponse<T>
                 {
-                    Data = new List<T>(),
-                    Exception = null,
                     Success = false,
-                    Message = "Data not found."
+                    Message = "Data not found.",
+                    Data = new List<T>()
                 };
             }
+
             return new DataResponse<T>("Data collected successfully.", true, data);
         }
 
+        // Failure Data Responses
         public DataResponse<T> CreateFailedDataResponse<T>(string message, Exception? ex = null)
         {
-            return new DataResponse<T>()
+            return new DataResponse<T>
             {
                 Success = false,
                 Message = message,
@@ -186,7 +179,7 @@
 
         public DataResponse<T> CreateFailedDataResponse<T>(Exception? ex = null)
         {
-            return new DataResponse<T>()
+            return new DataResponse<T>
             {
                 Success = false,
                 Message = "Operation failed.",
@@ -194,6 +187,26 @@
             };
         }
 
-        #endregion DataResponses
+        public DataResponse<T> CreateFailureDataResponse<T>(Exception ex)
+        {
+            return new DataResponse<T>
+            {
+                Success = false,
+                Message = "Database error, contact the administrator.",
+                Exception = ex
+            };
+        }
+
+        public DataResponse<T> CreateFailureDataResponse<T>(string message, Exception ex)
+        {
+            return new DataResponse<T>
+            {
+                Success = false,
+                Message = message,
+                Exception = ex
+            };
+        }
+
+        #endregion Data Responses
     }
 }
