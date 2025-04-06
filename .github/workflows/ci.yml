@@ -36,13 +36,16 @@ jobs:
           dotnet-version: 8.0
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore WebApi/pet-care-backend.sln
 
       - name: Build solution
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build WebApi/pet-care-backend.sln --no-restore --configuration Release
+
+      - name: List files for debugging
+        run: ls -la
 
       - name: Run tests
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test WebApi/pet-care-backend.sln --no-build --verbosity normal
 
 env:
   ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=PetCareDb;User=sa;Password=Your_password123;"
