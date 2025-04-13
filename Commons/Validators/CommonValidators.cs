@@ -62,23 +62,23 @@ namespace Commons.Validators
         public static Response ValidateCep(string cep)
         {
             if (string.IsNullOrWhiteSpace(cep))
-                return ResponseFactory.CreateInstance().CreateFailedResponse("CEP não pode ser vazio.");
+                return ResponseFactory.CreateFailedResponse("CEP não pode ser vazio.");
 
             cep = cep.Trim().Replace("-", "").Replace(".", "");
 
             if (cep.Length != 8)
-                return ResponseFactory.CreateInstance().CreateFailedResponse("CEP deve conter exatamente 8 caracteres.");
+                return ResponseFactory.CreateFailedResponse("CEP deve conter exatamente 8 caracteres.");
 
             if (!long.TryParse(cep, out _))
-                return ResponseFactory.CreateInstance().CreateFailedResponse("CEP deve conter apenas números.");
+                return ResponseFactory.CreateFailedResponse("CEP deve conter apenas números.");
 
-            return ResponseFactory.CreateInstance().CreateSuccessResponse();
+            return ResponseFactory.CreateSuccessResponse();
         }
 
         public static Response ValidatePhoneNumber(string phoneNumber)
         {
             if (string.IsNullOrWhiteSpace(phoneNumber))
-                return ResponseFactory.CreateInstance().CreateFailedResponse("O número de telefone não pode ser vazio.");
+                return ResponseFactory.CreateFailedResponse("O número de telefone não pode ser vazio.");
 
             phoneNumber = phoneNumber.Trim()
                                      .Replace("(", "")
@@ -89,38 +89,38 @@ namespace Commons.Validators
                                      .Replace("+", "");
 
             if (phoneNumber.Length < 8 || phoneNumber.Length > 11)
-                return ResponseFactory.CreateInstance().CreateFailedResponse("O número de telefone deve conter entre 8 e 11 dígitos.");
+                return ResponseFactory.CreateFailedResponse("O número de telefone deve conter entre 8 e 11 dígitos.");
 
             if (!long.TryParse(phoneNumber, out _))
-                return ResponseFactory.CreateInstance().CreateFailedResponse("O número de telefone deve conter apenas números.");
+                return ResponseFactory.CreateFailedResponse("O número de telefone deve conter apenas números.");
 
-            return ResponseFactory.CreateInstance().CreateSuccessResponse();
+            return ResponseFactory.CreateSuccessResponse();
         }
 
         public static Response ValidatePassword(string password)
         {
             if (string.IsNullOrWhiteSpace(password))
-                return ResponseFactory.CreateInstance().CreateFailedResponse(ValidationMessages.PasswordNotNull);
+                return ResponseFactory.CreateFailedResponse(ValidationMessages.PasswordNotNull);
 
             if (password.Length < PasswordConstants.MinLength)
-                return ResponseFactory.CreateInstance().CreateFailedResponse(string.Format(ValidationMessages.PasswordMinLength, PasswordConstants.MinLength));
+                return ResponseFactory.CreateFailedResponse(string.Format(ValidationMessages.PasswordMinLength, PasswordConstants.MinLength));
 
             if (password.Length > PasswordConstants.MaxLength)
-                return ResponseFactory.CreateInstance().CreateFailedResponse(string.Format(ValidationMessages.PasswordMaxLength, PasswordConstants.MaxLength));
+                return ResponseFactory.CreateFailedResponse(string.Format(ValidationMessages.PasswordMaxLength, PasswordConstants.MaxLength));
 
             if (!Regex.IsMatch(password, "[A-Z]"))
-                return ResponseFactory.CreateInstance().CreateFailedResponse(ValidationMessages.PasswordMissingUppercase);
+                return ResponseFactory.CreateFailedResponse(ValidationMessages.PasswordMissingUppercase);
 
             if (!Regex.IsMatch(password, "[a-z]"))
-                return ResponseFactory.CreateInstance().CreateFailedResponse(ValidationMessages.PasswordMissingLowercase);
+                return ResponseFactory.CreateFailedResponse(ValidationMessages.PasswordMissingLowercase);
 
             if (!Regex.IsMatch(password, @"\d"))
-                return ResponseFactory.CreateInstance().CreateFailedResponse(ValidationMessages.PasswordMissingDigit);
+                return ResponseFactory.CreateFailedResponse(ValidationMessages.PasswordMissingDigit);
 
             if (!Regex.IsMatch(password, @"[\W_]"))
-                return ResponseFactory.CreateInstance().CreateFailedResponse(ValidationMessages.PasswordMissingSymbol);
+                return ResponseFactory.CreateFailedResponse(ValidationMessages.PasswordMissingSymbol);
 
-            return ResponseFactory.CreateInstance().CreateSuccessResponse();
+            return ResponseFactory.CreateSuccessResponse();
         }
     }
 }

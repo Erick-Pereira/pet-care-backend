@@ -1,45 +1,56 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using web_api.Models;
 
-[ApiController]
-[Route("api/[controller]")]
-public class AuthController : ControllerBase
+namespace web_api.Controllers
 {
-    /*private readonly DataBaseDbContext _context;
-    private readonly JwtService _jwtService;
-
-    public AuthController(DataBaseDbContext context, JwtService jwtService)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class AuthController : ControllerBase
     {
-        _context = context;
-        _jwtService = jwtService;
-    }
+        private readonly IConfiguration _configuration;
 
-    [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterDto dto)
-    {
-        var user = new User
+        public AuthController(IConfiguration configuration)
         {
-            Username = dto.Username,
-            Password = BCrypt.Net.BCrypt.HashPassword(dto.Password)
-        };
-
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
-
-        return Ok(new { message = "User registered successfully" });
-    }
-
-    [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginDto dto)
-    {
-        var user = _context.Users.SingleOrDefault(u => u.Username == dto.Username);
-
-        if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
-        {
-            return Unauthorized(new { message = "Invalid credentials" });
+            _configuration = configuration;
         }
 
-        var token = _jwtService.GenerateToken(user);
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] LoginRequest request)
+        {
+            // Simulate user validation (replace with actual user validation logic)
+            if (request.Username == "admin" && request.Password == "password")
+            {
+                var token = GenerateJwtToken(request.Username);
+                return Ok(new { Token = token });
+            }
 
-        return Ok(new { token });
-    }*/
+            return Unauthorized("Invalid username or password.");
+        }
+
+        private string GenerateJwtToken(string username)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, username),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddHours(12),
+                signingCredentials: credentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+    }
 }

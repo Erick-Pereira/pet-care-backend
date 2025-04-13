@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DAL.Mapping
 {
-    public class StateMapConfig : IEntityTypeConfiguration<State>
+    internal class StateMapConfig : IEntityTypeConfiguration<State>
     {
         public void Configure(EntityTypeBuilder<State> builder)
         {

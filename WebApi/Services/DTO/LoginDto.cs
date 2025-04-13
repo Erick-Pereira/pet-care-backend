@@ -1,4 +1,4 @@
-﻿namespace pet_care_backend.Services.DTO
+﻿namespace web_api.Services.DTO
 {
     public class LoginDto
     {

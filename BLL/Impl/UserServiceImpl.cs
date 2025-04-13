@@ -2,59 +2,59 @@
 using BLL.Validation;
 using Commons.Extensions;
 using Commons.Responses;
-using DAL.Interfaces;
+using DAL.UnitOfWork;
 using Entities;
 
 namespace BLL.Impl
 {
     internal class UserServiceImpl : IUserService
     {
-        private readonly IUserDAL _userDAL;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly UserValidator validator;
 
-        public UserServiceImpl(IUserDAL userDAL)
+        public UserServiceImpl(IUnitOfWork unitOfWork)
         {
-            _userDAL = userDAL ?? throw new ArgumentNullException(nameof(userDAL));
+            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            validator = new UserValidator();
         }
 
         public async Task<Response> Delete(Guid id)
         {
-            return await _userDAL.Delete(id);
+            return await _unitOfWork.UserRepository.Delete(id);
         }
 
         public async Task<SingleResponse<User>> Get(Guid id)
         {
-            return await _userDAL.Get(id);
+            return await _unitOfWork.UserRepository.Get(id);
         }
 
         public async Task<DataResponse<User>> Get(int skip, int take)
         {
-            return await _userDAL.Get(skip, take);
+            return await _unitOfWork.UserRepository.Get(skip, take);
         }
 
         public async Task<Response> Insert(User item)
         {
-            var validator = new UserValidator();
             var validationResult = validator.Validate(item);
 
             if (!validationResult.IsValid)
             {
-                return validationResult.ToResponse(); // Converte ValidationResult para Response
+                return validationResult.ToResponse();
             }
 
-            return await _userDAL.Insert(item);
+            return await _unitOfWork.UserRepository.Insert(item);
         }
 
         public async Task<Response> Update(User item)
         {
-            var validator = new UserValidator();
             var validationResult = validator.Validate(item);
 
             if (!validationResult.IsValid)
             {
-                return validationResult.ToResponse(); // Converte ValidationResult para Response
+                return validationResult.ToResponse();
             }
 
-            return await _userDAL.Update(item);
+            return await _unitOfWork.UserRepository.Update(item);
         }
     }
 }

@@ -8,9 +8,9 @@ namespace BLL.ErrorHandling
         {
             if (error.Message.Contains("UQ_EMAIL"))
             {
-                return ResponseFactory.CreateInstance().CreateFailedResponse("Error when registering the user, because the email is already in use.");
+                return ResponseFactory.CreateFailedResponse("Error when registering the user, because the email is already in use.");
             }
-            return ResponseFactory.CreateInstance().CreateFailedResponse("Error when registering the client, contact the admin.", error);
+            return ResponseFactory.CreateFailedResponse("Error when registering the client, contact the admin.", error);
         }
     }
 }

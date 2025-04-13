@@ -5,7 +5,7 @@ using FluentValidation;
 
 namespace BLL.Validation
 {
-    public class UserValidator : AbstractValidator<User>
+    internal class UserValidator : AbstractValidator<User>
     {
         public UserValidator()
         {
@@ -33,8 +33,13 @@ namespace BLL.Validation
                 .Must(CommonValidators.IsValidCep).WithMessage(ValidationMessages.CepInvalid);
 
             RuleFor(user => user.PhoneNumber)
-                .Must(phone => CommonValidators.ValidatePhoneNumber(phone).Success)
+                .Must(phone => CommonValidators.ValidatePhoneNumber(phone).Success == true)
                 .WithMessage(ValidationMessages.PhoneNumberInvalid);
+
+            RuleFor(user => user.CPF)
+                .NotEmpty().WithMessage("CPF is required")
+                .Length(11).WithMessage("CPF must be exactly 11 characters")
+                .Matches("^[0-9]{11}$").WithMessage("CPF must contain only numbers");
         }
     }
 }

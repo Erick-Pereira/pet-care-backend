@@ -4,7 +4,7 @@
     {
         #region Singleton
 
-        private static ResponseFactory _factory;
+        private static ResponseFactory? _factory;
 
         public static ResponseFactory CreateInstance()
         {
@@ -19,7 +19,7 @@
         #region General Responses
 
         // Success Responses
-        public Response CreateSuccessResponse()
+        public static Response CreateSuccessResponse()
         {
             return new Response("Operation performed successfully.", true);
         }
@@ -34,12 +34,12 @@
         }
 
         // Failure Responses
-        public Response CreateFailedResponse(string message, Exception? ex = null)
+        public static Response CreateFailedResponse(string message, Exception? ex = null)
         {
             return new Response(message, false, ex);
         }
 
-        public Response CreateFailedResponse(Exception? ex = null)
+        public static Response CreateFailedResponse(Exception? ex = null)
         {
             return new Response("Operation failed.", false, ex);
         }
@@ -53,7 +53,7 @@
             };
         }
 
-        public Response CreateFailedResponseNotFoundId()
+        public static Response CreateFailedResponseNotFoundId()
         {
             return new Response("Not found Id.", false);
         }
@@ -72,7 +72,7 @@
         #region Single Responses
 
         // Success Single Responses
-        public SingleResponse<T> CreateSuccessSingleResponse<T>(T item)
+        public static SingleResponse<T> CreateSuccessSingleResponse<T>(T item)
         {
             return new SingleResponse<T>("Data collected successfully", true, item);
         }
