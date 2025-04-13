@@ -11,9 +11,9 @@
         {
         }
 
-        public T Item { get; set; }
+        public T? Item { get; set; }
 
         public bool NotFound
-        { get { return Item == null; } }
+        { get { return EqualityComparer<T?>.Default.Equals(Item, default(T?)); } }
     }
 }

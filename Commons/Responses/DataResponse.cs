@@ -11,7 +11,7 @@
         {
         }
 
-        public List<T> Data { get; set; }
+        public List<T>? Data { get; set; }
 
         public bool IsEmptyData
         { get { return Data == null || Data.Count == 0; } }

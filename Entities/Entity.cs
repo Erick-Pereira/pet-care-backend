@@ -4,7 +4,7 @@
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public string CreatedBy { get; set; }
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
         public bool Active { get; set; }
         public DateTime? CreatedAt { get; private set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }

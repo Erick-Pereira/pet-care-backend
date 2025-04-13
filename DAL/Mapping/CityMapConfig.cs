@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DAL.Mapping
 {
-    public class CityMapConfig : IEntityTypeConfiguration<City>
+    internal class CityMapConfig : IEntityTypeConfiguration<City>
     {
         public void Configure(EntityTypeBuilder<City> builder)
         {

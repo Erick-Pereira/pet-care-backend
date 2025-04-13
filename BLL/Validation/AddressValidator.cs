@@ -1,35 +1,27 @@
 ﻿using Entities;
+using FluentValidation;
 
 namespace BLL.Validation
 {
-    public static class AddressValidator
+    internal class AddressValidator : AbstractValidator<Address>
     {
-        public static void Validate(Address address)
+        public AddressValidator()
         {
-            if (address == null)
-            {
-                throw new ArgumentNullException(nameof(address), "Address cannot be null.");
-            }
+            RuleFor(address => address)
+                .NotNull().WithMessage("Address cannot be null.");
 
-            if (string.IsNullOrWhiteSpace(address.Street))
-            {
-                throw new ArgumentException("Street cannot be empty.", nameof(address.Street));
-            }
+            RuleFor(address => address.ZipCode)
+               .NotEmpty().WithMessage("Zip code cannot be empty.")
+               .Matches("^\\d{9}$").WithMessage("Zip code must contain exactly 9 numeric characters.");
 
-            if (string.IsNullOrWhiteSpace(address.Neighborhood.City.Name))
-            {
-                throw new ArgumentException("City cannot be empty.", nameof(address.Neighborhood.City.Name));
-            }
+            RuleFor(address => address.Complement)
+               .MaximumLength(60).WithMessage("Complement cannot exceed 60 characters.");
 
-            if (string.IsNullOrWhiteSpace(address.Neighborhood.City.State.Name))
-            {
-                throw new ArgumentException("State cannot be empty.", nameof(address.Neighborhood.City.State.Name));
-            }
+            RuleFor(address => address.Number)
+                .MaximumLength(6).WithMessage("Number cannot exceed 6 characters.");
 
-            if (string.IsNullOrWhiteSpace(address.ZipCode))
-            {
-                throw new ArgumentException("Zip code cannot be empty.", nameof(address.ZipCode));
-            }
+            RuleFor(address => address.Neighborhood)
+                .NotNull().WithMessage("Neighborhood cannot be null.");
         }
     }
 }

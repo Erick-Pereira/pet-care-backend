@@ -4,39 +4,44 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-public class JwtService
+namespace web_api.Services
 {
-    private readonly string _secret;
-    private readonly string _issuer;
-    private readonly string _audience;
-    private readonly int _expireMinutes;
-
-    public JwtService(IConfiguration config)
+    public class JwtService
     {
-        _secret = config["Jwt:Key"];
-        _issuer = config["Jwt:Issuer"];
-        _audience = config["Jwt:Audience"];
-        _expireMinutes = int.Parse(config["Jwt:ExpireMinutes"]);
-    }
+        private readonly string _secret;
+        private readonly string _issuer;
+        private readonly string _audience;
+        private readonly int _expireMinutes;
 
-    public string GenerateToken(User user)
-    {
-        var claims = new[]
+        public JwtService(IConfiguration config)
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
+            _secret = config["Jwt:Key"] ?? string.Empty;
+            _issuer = config["Jwt:Issuer"] ?? string.Empty;
+            _audience = config["Jwt:Audience"] ?? string.Empty;
+            _expireMinutes = int.Parse(config["Jwt:ExpireMinutes"] ?? "0");
+        }
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secret));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        public string GenerateToken(User user)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_secret);
 
-        var token = new JwtSecurityToken(
-            issuer: _issuer,
-            audience: _audience,
-            claims: claims,
-            expires: DateTime.Now.AddMinutes(_expireMinutes),
-            signingCredentials: creds);
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.FullName),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim("PermissionLevel", user.PermissionLevel) // Add permission level to claims
+            };
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddMinutes(_expireMinutes),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
     }
 }

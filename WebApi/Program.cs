@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Configure the DbContext with a connection string
 builder.Services.AddDbContext<DataBaseDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Configure JWT authentication
 var jwtSettings = builder.Configuration.GetSection("Jwt");
