@@ -35,7 +35,6 @@ namespace BLL.Impl
 
         public async Task<Response> Insert(User item)
         {
-            var validator = new UserValidator();
             var validationResult = validator.Validate(item);
 
             if (!validationResult.IsValid)
@@ -48,7 +47,6 @@ namespace BLL.Impl
 
         public async Task<Response> Update(User item)
         {
-            var validator = new UserValidator();
             var validationResult = validator.Validate(item);
 
             if (!validationResult.IsValid)
