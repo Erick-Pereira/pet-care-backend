@@ -1,10 +1,24 @@
+using web_api.Services;
+using DotNetEnv;
 using AspNetCoreRateLimit;
+using BLL.Validation;
 using DAL;
+using DAL.UnitOfWork;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using WebApi.Extensions;
+
+// Load .env file with absolute path
+var envPath = Path.Combine(Directory.GetCurrentDirectory(), "..", ".env");
+if (!File.Exists(envPath))
+{
+    throw new FileNotFoundException($".env file not found at {envPath}");
+}
+
+DotNetEnv.Env.Load(envPath);
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,8 +29,16 @@ builder.Services.AddDbContext<DataBaseDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Configure JWT authentication
-var jwtSettings = builder.Configuration.GetSection("Jwt");
-var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("Jwt__Key") ?? jwtSettings["Key"]);
+var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
+var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
+var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
+
+if (string.IsNullOrEmpty(jwtKey) || jwtKey.Length < 16)
+{
+    throw new InvalidOperationException($"JWT_KEY must be at least 16 characters long. Current length: {jwtKey?.Length ?? 0}");
+}
+
+var key = Encoding.ASCII.GetBytes(jwtKey);
 
 builder.Services.AddAuthentication(options =>
 {
@@ -31,11 +53,32 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings["Issuer"],
-        ValidAudience = jwtSettings["Audience"],
+        ValidIssuer = jwtIssuer,
+        ValidAudience = jwtAudience,
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
 });
+
+#region Services
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// Register validators
+builder.Services.AddScoped<AddressValidator>();
+builder.Services.AddScoped<UserValidator>();
+builder.Services.AddScoped<NeighborhoodValidator>();
+builder.Services.AddScoped<CityValidator>();
+builder.Services.AddScoped<StateValidator>();
+builder.Services.AddScoped<PetValidator>();
+builder.Services.AddScoped<BreedValidator>();
+builder.Services.AddScoped<SpecieValidator>();
+
+// Register JWT service
+builder.Services.AddScoped<JwtService>();
+
+// Register other services
+builder.Services.AddApplicationServices();
+#endregion Services
 
 builder.Services.AddHealthChecks()
     .AddSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -101,7 +144,7 @@ app.Use(async (context, next) =>
 
 app.UseCors("AllowSpecificOrigins");
 
-app.UseAuthentication();
+app.UseAuthentication(); // Deve vir antes do UseAuthorization
 app.UseAuthorization();
 
 app.UseIpRateLimiting();

@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using web_api.Models;
+using web_api.Services;
+using web_api.Services.DTO;
+using Entities;
 
 namespace web_api.Controllers
 {
@@ -11,45 +9,44 @@ namespace web_api.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
+        private readonly JwtService _jwtService;
 
-        public AuthController(IConfiguration configuration)
+        public AuthController(JwtService jwtService)
         {
-            _configuration = configuration;
+            _jwtService = jwtService ?? throw new ArgumentNullException(nameof(jwtService));
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] LoginDto request)
         {
+            // TODO: Replace with actual user authentication
             if (request.Username == "admin" && request.Password == "password")
             {
-                var token = GenerateJwtToken(request.Username);
+                var user = new User
+                {
+                    FullName = "Administrator",
+                    Email = request.Username,
+                    PermissionLevel = "Admin" // You can set different permission levels
+                };
+
+                var token = _jwtService.GenerateToken(user);
+                return Ok(new { Token = token });
+            }
+
+             if (request.Username == "user" && request.Password == "password")
+            {
+                var user = new User
+                {
+                    FullName = "user",
+                    Email = request.Username,
+                    PermissionLevel = "User" // You can set different permission levels
+                };
+
+                var token = _jwtService.GenerateToken(user);
                 return Ok(new { Token = token });
             }
 
             return Unauthorized("Invalid username or password.");
-        }
-
-        private string GenerateJwtToken(string username)
-        {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, username),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddHours(12),
-                signingCredentials: credentials
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

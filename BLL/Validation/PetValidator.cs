@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace BLL.Validation
 {
-    internal class PetValidator : AbstractValidator<Pet>
+    public class PetValidator : AbstractValidator<Pet>
     {
         public PetValidator()
         {

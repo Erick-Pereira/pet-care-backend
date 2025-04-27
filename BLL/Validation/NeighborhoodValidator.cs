@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace BLL.Validation
 {
-    internal class NeighborhoodValidator : AbstractValidator<Neighborhood>
+    public class NeighborhoodValidator : AbstractValidator<Neighborhood>
     {
         public NeighborhoodValidator()
         {

@@ -7,15 +7,17 @@ using Entities;
 
 namespace BLL.Impl
 {
-    public class CityService : ICityService
+    public class CityServiceImpl : ICityService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IStateService _stateService;
         private readonly CityValidator validator;
 
-        public CityService(IUnitOfWork unitOfWork)
+        public CityServiceImpl(IUnitOfWork unitOfWork, IStateService stateService)
         {
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            _stateService = stateService ?? throw new ArgumentNullException(nameof(stateService));
+            validator = new CityValidator();
         }
 
         public async Task<Response> Delete(Guid id)

@@ -7,15 +7,16 @@ using Entities;
 
 namespace BLL.Impl
 {
-    internal class AddressService : IAddressService
+    public class AddressServiceImpl : IAddressService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly INeighborhoodService _neighborhoodService;
         private readonly AddressValidator validator;
 
-        public AddressService(IUnitOfWork unitOfWork, AddressValidator validator)
+        public AddressServiceImpl(IUnitOfWork unitOfWork, INeighborhoodService neighborhoodService, AddressValidator validator)
         {
-            _unitOfWork = unitOfWork;
+            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            _neighborhoodService = neighborhoodService ?? throw new ArgumentNullException(nameof(neighborhoodService));
             this.validator = validator;
         }
 

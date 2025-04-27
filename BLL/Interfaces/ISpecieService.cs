@@ -3,7 +3,7 @@ using Entities;
 
 namespace BLL.Interfaces
 {
-    internal interface ISpecieService : ICRUD<Specie>
+    public interface ISpecieService : ICRUD<Specie>
     {
     }
 }

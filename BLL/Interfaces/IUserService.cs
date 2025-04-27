@@ -3,7 +3,7 @@ using Entities;
 
 namespace BLL.Interfaces
 {
-    internal interface IUserService : ICRUD<User>
+    public interface IUserService : ICRUD<User>
     {
     }
 }

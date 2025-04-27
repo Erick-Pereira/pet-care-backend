@@ -5,7 +5,7 @@ using FluentValidation;
 
 namespace BLL.Validation
 {
-    internal class UserValidator : AbstractValidator<User>
+    public class UserValidator : AbstractValidator<User>
     {
         public UserValidator()
         {
