@@ -41,7 +41,7 @@ namespace DAL.Mapping
                 .HasForeignKey(p => p.BreedId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(p => p.User)
+            builder.HasOne(p => p.Owner)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
         }

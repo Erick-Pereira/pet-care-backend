@@ -56,5 +56,15 @@ namespace BLL.Impl
 
             return await _unitOfWork.StateRepository.Update(item);
         }
+
+        public async Task<SingleResponse<State>> FindByAbreviation(string abreviation)
+        {
+            if (string.IsNullOrWhiteSpace(abreviation))
+            {
+                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<State>("State abreviation cannot be empty");
+            }
+
+            return await _unitOfWork.StateRepository.FindByAbreviation(abreviation);
+        }
     }
 }

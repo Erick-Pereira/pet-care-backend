@@ -44,5 +44,19 @@ namespace DAL.Impl
                 return ResponseFactory.CreateInstance().CreateFailedDataResponse<User>(ex);
             }
         }
+
+        public async Task<int> CountAllByAddressId(Guid addressId)
+        {
+            try
+            {
+                return await _dbContext.Set<User>()
+                    .CountAsync(u => u.AddressId == addressId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error counting users by address ID {addressId}");
+                return 0;
+            }
+        }
     }
 }

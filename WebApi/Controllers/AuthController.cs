@@ -21,7 +21,6 @@ namespace web_api.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest request)
         {
-            // Simulate user validation (replace with actual user validation logic)
             if (request.Username == "admin" && request.Password == "password")
             {
                 var token = GenerateJwtToken(request.Username);

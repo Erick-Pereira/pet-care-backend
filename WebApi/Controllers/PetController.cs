@@ -1,6 +1,6 @@
 using BLL.Interfaces;
+using Entities;
 using Microsoft.AspNetCore.Mvc;
-using web_api.Models;
 
 namespace WebApi.Controllers
 {
@@ -16,9 +16,9 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterPet([FromBody] PetRegistrationRequest request)
+        public async Task<IActionResult> RegisterPet([FromBody] Pet request)
         {
-            var response = await _petService.RegisterPetWithOwner(request.ToEntity());
+            var response = await _petService.RegisterPetWithOwner(request);
             if ((bool)!response.Success)
             {
                 return BadRequest(response);

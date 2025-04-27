@@ -19,11 +19,23 @@ namespace Commons.Extensions
                 errorMessages.AppendLine(error.ErrorMessage);
             }
 
-            return new Response
+            return ResponseFactory.CreateFailedResponse(errorMessages.ToString());
+        }
+
+        public static SingleResponse<T> ToSingleResponse<T>(this ValidationResult result)
+        {
+            if (result.IsValid)
             {
-                Success = false,
-                Message = errorMessages.ToString()
-            };
+                return ResponseFactory.CreateSuccessSingleResponse<T>("Entidade validada com sucesso.");
+            }
+
+            StringBuilder errorMessages = new StringBuilder();
+            foreach (var error in result.Errors)
+            {
+                errorMessages.AppendLine(error.ErrorMessage);
+            }
+
+            return ResponseFactory.CreateInstance().CreateFailedSingleResponse<T>(errorMessages.ToString());
         }
     }
 }
