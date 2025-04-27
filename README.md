@@ -1,12 +1,12 @@
 # Pet Care Backend
 
-Este é o backend do sistema **Pet Care**, desenvolvido em .NET 8.0, com suporte a autenticação JWT, versionamento de API, health checks e integração com SQL Server.
+Este é o backend do sistema **Pet Care**, desenvolvido em .NET 8.0, com suporte a autenticação JWT, versionamento de API, health checks e integração com PostegreSQL.
 
 ## Tecnologias Utilizadas
 
 - **.NET 8.0**
 - **Entity Framework Core**
-- **SQL Server**
+- **PostegreSQL**
 - **Docker**
 - **Swagger (OpenAPI)**
 - **AspNetCoreRateLimit** (Rate Limiting)
