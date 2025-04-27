@@ -1,61 +1,90 @@
 using Commons.Responses;
-using DAL;
-using DAL.Impl;
 using DAL.Interfaces;
 using Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-public class NeighborhoodDALImpl : BaseDAL<Neighborhood>, INeighborhoodDAL
+namespace DAL.Impl
 {
-    public NeighborhoodDALImpl(DataBaseDbContext dbContext, ILogger<BaseDAL<Neighborhood>> logger) : base(dbContext, logger)
+    public class NeighborhoodDALImpl : BaseDAL<Neighborhood>, INeighborhoodDAL
     {
-    }
-
-    public async Task<SingleResponse<Neighborhood>> FindByNeighborhood(Neighborhood neighborhood)
-    {
-        try
+        public NeighborhoodDALImpl(DataBaseDbContext dbContext, ILogger<BaseDAL<Neighborhood>> logger) : base(dbContext, logger)
         {
-            var existingNeighborhood = await _dbContext.Set<Neighborhood>()
-                .FirstOrDefaultAsync(n =>
-                    n.Name == neighborhood.Name &&
-                    n.CityId == neighborhood.CityId);
+        }
 
-            if (existingNeighborhood == null)
+        public async Task<SingleResponse<Neighborhood>> FindByNeighborhood(Neighborhood neighborhood)
+        {
+            try
             {
-                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Neighborhood>("Neighborhood not found");
+                var existingNeighborhood = await _dbContext.Set<Neighborhood>()
+                    .FirstOrDefaultAsync(n =>
+                        n.Name == neighborhood.Name &&
+                        n.CityId == neighborhood.CityId);
+
+                if (existingNeighborhood == null)
+                {
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Neighborhood>("Neighborhood not found");
+                }
+
+                return ResponseFactory.CreateSuccessSingleResponse(existingNeighborhood);
             }
-
-            return ResponseFactory.CreateSuccessSingleResponse(existingNeighborhood);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error finding neighborhood");
+                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Neighborhood>("Error finding neighborhood", ex);
+            }
         }
-        catch (Exception ex)
+
+        public async Task<SingleResponse<Neighborhood>> InsertReturnObject(Neighborhood neighborhood)
         {
-            _logger.LogError(ex, "Error finding neighborhood");
-            return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Neighborhood>("Error finding neighborhood", ex);
+            try
+            {
+                var result = await _dbContext.Set<Neighborhood>().AddAsync(neighborhood);
+                await _dbContext.SaveChangesAsync();
+
+                return ResponseFactory.CreateSuccessSingleResponse(result.Entity);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error inserting neighborhood");
+                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Neighborhood>("Error inserting neighborhood", ex);
+            }
         }
-    }
 
-    public Task<SingleResponse<Neighborhood>> InsertReturnObject(Neighborhood neighborhood)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<SingleResponse<Neighborhood>> UpdateReturnObject(Neighborhood neighborhood)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<int> CountAllByCityId(Guid cityId)
-    {
-        try
+        public async Task<SingleResponse<Neighborhood>> UpdateReturnObject(Neighborhood neighborhood)
         {
-            return await _dbContext.Set<Neighborhood>()
-                .CountAsync(n => n.CityId == cityId);
+            try
+            {
+                var existingNeighborhood = await _dbContext.Set<Neighborhood>().FindAsync(neighborhood.Id);
+                if (existingNeighborhood == null)
+                {
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Neighborhood>("Address not found");
+                }
+
+                _dbContext.Entry(existingNeighborhood).CurrentValues.SetValues(neighborhood);
+                await _dbContext.SaveChangesAsync();
+
+                return ResponseFactory.CreateSuccessSingleResponse(existingNeighborhood);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating neighborhood");
+                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Neighborhood>("Error updating neighborhood", ex);
+            }
         }
-        catch (Exception ex)
+
+        public async Task<int> CountAllByCityId(Guid cityId)
         {
-            _logger.LogError(ex, $"Error counting neighborhoods by city ID {cityId}");
-            return 0;
+            try
+            {
+                return await _dbContext.Set<Neighborhood>()
+                    .CountAsync(n => n.CityId == cityId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error counting neighborhoods by city ID {cityId}");
+                return 0;
+            }
         }
     }
 }

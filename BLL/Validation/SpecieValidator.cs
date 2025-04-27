@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace BLL.Validation
 {
-    internal class SpecieValidator : AbstractValidator<Specie>
+    public class SpecieValidator : AbstractValidator<Specie>
     {
         public SpecieValidator()
         {

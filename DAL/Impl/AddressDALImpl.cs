@@ -36,6 +36,22 @@ namespace DAL.Impl
             }
         }
 
+        public async Task<SingleResponse<Address>> InsertReturnObject(Address address)
+        {
+            try
+            {
+                var result = await _dbContext.Set<Address>().AddAsync(address);
+                await _dbContext.SaveChangesAsync();
+
+                return ResponseFactory.CreateSuccessSingleResponse(result.Entity);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error inserting address");
+                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Address>("Error inserting address", ex);
+            }
+        }
+
         public async Task<SingleResponse<Address>> UpdateReturnObject(Address address)
         {
             try
@@ -55,22 +71,6 @@ namespace DAL.Impl
             {
                 _logger.LogError(ex, "Error updating address");
                 return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Address>("Error updating address", ex);
-            }
-        }
-
-        public async Task<SingleResponse<Address>> InsertReturnObject(Address address)
-        {
-            try
-            {
-                var result = await _dbContext.Set<Address>().AddAsync(address);
-                await _dbContext.SaveChangesAsync();
-
-                return ResponseFactory.CreateSuccessSingleResponse(result.Entity);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error inserting address");
-                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Address>("Error inserting address", ex);
             }
         }
 

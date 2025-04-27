@@ -7,15 +7,18 @@ using Entities;
 
 namespace BLL.Impl
 {
-    internal class UserServiceImpl : IUserService
+    public class UserServiceImpl : IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAddressService _addressService;
+        private readonly IHashService _hashService;
         private readonly UserValidator validator;
 
-        public UserServiceImpl(IUnitOfWork unitOfWork)
+        public UserServiceImpl(IUnitOfWork unitOfWork, IAddressService addressService, IHashService hashService)
         {
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            _addressService = addressService ?? throw new ArgumentNullException(nameof(addressService));
+            _hashService = hashService ?? throw new ArgumentNullException(nameof(hashService));
             validator = new UserValidator();
         }
 
@@ -40,6 +43,9 @@ namespace BLL.Impl
             if (!validationResult.IsValid)
                 return validationResult.ToResponse();
 
+            // Hash da senha antes de salvar
+            item.Password = await _hashService.HashPasswordAsync(item.Password);
+
             var addressResponse = await _addressService.FindOrCreateNew(item.Address);
             if (!addressResponse.Success.GetValueOrDefault() || addressResponse.Item == null)
             {
@@ -55,6 +61,9 @@ namespace BLL.Impl
             var validationResult = validator.Validate(item);
             if (!validationResult.IsValid)
                 return validationResult.ToResponse();
+
+            // Hash da senha antes de atualizar
+            item.Password = await _hashService.HashPasswordAsync(item.Password);
 
             var addressResponse = await _addressService.FindOrCreateOrSwitch(item.Address);
             if (!addressResponse.Success.GetValueOrDefault() || addressResponse.Item == null)
