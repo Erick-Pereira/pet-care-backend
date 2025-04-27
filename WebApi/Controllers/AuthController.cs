@@ -19,7 +19,6 @@ namespace web_api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto request)
         {
-            // TODO: Replace with actual user authentication
             if (request.Username == "admin" && request.Password == "password")
             {
                 var user = new User
@@ -33,7 +32,7 @@ namespace web_api.Controllers
                 return Ok(new { Token = token });
             }
 
-             if (request.Username == "user" && request.Password == "password")
+            if (request.Username == "user" && request.Password == "password")
             {
                 var user = new User
                 {
