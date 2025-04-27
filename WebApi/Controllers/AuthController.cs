@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Entities;
+using Microsoft.AspNetCore.Mvc;
 using web_api.Services;
 using web_api.Services.DTO;
-using Entities;
 
 namespace web_api.Controllers
 {

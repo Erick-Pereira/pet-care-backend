@@ -1,5 +1,3 @@
-using web_api.Services;
-using DotNetEnv;
 using AspNetCoreRateLimit;
 using BLL.Validation;
 using DAL;
@@ -9,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using web_api.Services;
 using WebApi.Extensions;
 
 // Load .env file with absolute path
@@ -78,6 +77,7 @@ builder.Services.AddScoped<JwtService>();
 
 // Register other services
 builder.Services.AddApplicationServices();
+
 #endregion Services
 
 builder.Services.AddHealthChecks()
