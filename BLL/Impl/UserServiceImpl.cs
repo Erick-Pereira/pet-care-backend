@@ -10,6 +10,7 @@ namespace BLL.Impl
     internal class UserServiceImpl : IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IAddressService _addressService;
         private readonly UserValidator validator;
 
         public UserServiceImpl(IUnitOfWork unitOfWork)
@@ -36,10 +37,14 @@ namespace BLL.Impl
         public async Task<Response> Insert(User item)
         {
             var validationResult = validator.Validate(item);
-
             if (!validationResult.IsValid)
-            {
                 return validationResult.ToResponse();
+
+            var addressResponse = await _addressService.FindOrCreateNew(item.Address);
+            if (!addressResponse.Success.GetValueOrDefault() || addressResponse.Item == null)
+            {
+                item.AddressId = addressResponse.Item.Id;
+                item.Address = addressResponse.Item;
             }
 
             return await _unitOfWork.UserRepository.Insert(item);
@@ -48,10 +53,14 @@ namespace BLL.Impl
         public async Task<Response> Update(User item)
         {
             var validationResult = validator.Validate(item);
-
             if (!validationResult.IsValid)
-            {
                 return validationResult.ToResponse();
+
+            var addressResponse = await _addressService.FindOrCreateOrSwitch(item.Address);
+            if (!addressResponse.Success.GetValueOrDefault() || addressResponse.Item == null)
+            {
+                item.AddressId = addressResponse.Item.Id;
+                item.Address = addressResponse.Item;
             }
 
             return await _unitOfWork.UserRepository.Update(item);

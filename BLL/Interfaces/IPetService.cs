@@ -6,6 +6,6 @@ namespace BLL.Interfaces
 {
     public interface IPetService : ICRUD<Pet>
     {
-        Task<Response> RegisterPetWithOwner(PetRegistrationRequest request);
+        Task<Response> RegisterPetWithOwner(Pet request);
     }
 }

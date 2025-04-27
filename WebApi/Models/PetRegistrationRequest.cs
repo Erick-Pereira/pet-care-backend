@@ -6,14 +6,5 @@ namespace web_api.Models
     {
         public Pet Pet { get; set; }
         public User Owner { get; set; }
-
-        public Entities.PetRegistrationRequest ToEntity()
-        {
-            return new Entities.PetRegistrationRequest
-            {
-                Pet = this.Pet,
-                Owner = this.Owner
-            };
-        }
     }
 }

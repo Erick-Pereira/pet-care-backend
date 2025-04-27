@@ -8,7 +8,7 @@ namespace DAL.Impl
     public abstract class BaseDAL<T> where T : Entity
     {
         protected readonly DataBaseDbContext _dbContext;
-        private readonly ILogger<BaseDAL<T>> _logger;
+        protected readonly ILogger<BaseDAL<T>> _logger;
 
         protected BaseDAL(DataBaseDbContext dbContext, ILogger<BaseDAL<T>> logger)
         {

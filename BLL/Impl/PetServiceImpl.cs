@@ -55,10 +55,10 @@ namespace BLL.Impl
             return await _unitOfWork.PetRepository.Update(item);
         }
 
-        public async Task<Response> RegisterPetWithOwner(PetRegistrationRequest request)
+        public async Task<Response> RegisterPetWithOwner(Pet request)
         {
             // Validate the pet and owner
-            var petValidationResult = validator.Validate(request.Pet);
+            var petValidationResult = validator.Validate(request);
             if (!petValidationResult.IsValid)
             {
                 return petValidationResult.ToResponse();
@@ -71,10 +71,10 @@ namespace BLL.Impl
                 return ownerResponse;
             }
 
-            request.Pet.UserId = request.Owner.Id;
+            request.OwnerId = request.Owner.Id;
 
             // Insert pet into the database
-            var petResponse = await _unitOfWork.PetRepository.Insert(request.Pet);
+            var petResponse = await _unitOfWork.PetRepository.Insert(request);
             return (bool)!petResponse.Success ? petResponse : ResponseFactory.CreateInstance().CreateSuccessResponse("Pet and owner registered successfully.");
         }
     }

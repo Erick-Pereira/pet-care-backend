@@ -13,7 +13,7 @@ namespace Entities
         public string Acquisition { get; set; } = string.Empty;
         public bool IsCastrated { get; set; }
 
-        public Guid UserId { get; set; }
-        public User User { get; set; }
+        public Guid OwnerId { get; set; }
+        public User Owner { get; set; }
     }
 }
