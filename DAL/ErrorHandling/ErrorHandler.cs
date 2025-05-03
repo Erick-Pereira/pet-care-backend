@@ -1,4 +1,5 @@
-﻿using Commons.Responses;
+﻿using Commons.Constants;
+using Commons.Responses;
 
 namespace BLL.ErrorHandling
 {
@@ -6,7 +7,7 @@ namespace BLL.ErrorHandling
     {
         public static Response Handle(Exception error)
         {
-            if (error.Message.Contains("UQ_EMAIL"))
+            if (error.Message.Contains(UserConstants.EmailUniqueIndexName))
             {
                 return ResponseFactory.CreateFailedResponse("Error when registering the user, because the email is already in use.");
             }

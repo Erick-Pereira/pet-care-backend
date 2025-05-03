@@ -56,5 +56,27 @@ namespace BLL.Impl
 
             return await _unitOfWork.SpecieRepository.Update(item);
         }
+
+        public async Task<SingleResponse<Specie>> ToggleActive(Guid id)
+        {
+            try
+            {
+                var entity = await _unitOfWork.SpecieRepository.Get(id);
+                if (!entity.Success == true || entity.Item == null)
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Specie>("Species not found");
+
+                entity.Item.Active = !entity.Item.Active;
+                var updateResponse = await _unitOfWork.SpecieRepository.Update(entity.Item);
+
+                if (!updateResponse.Success == true)
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Specie>(updateResponse.Message);
+
+                return ResponseFactory.CreateSuccessSingleResponse(entity.Item);
+            }
+            catch (Exception ex)
+            {
+                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Specie>("Error toggling species status", ex);
+            }
+        }
     }
 }

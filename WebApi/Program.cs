@@ -24,8 +24,32 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 // Configure the DbContext with a connection string
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+
+if (string.IsNullOrEmpty(databaseUrl))
+{
+    throw new InvalidOperationException("DATABASE_URL not found in environment variables");
+}
+
+// Parse database URL and create proper connection string
+var uri = new Uri(databaseUrl);
+var userInfo = uri.UserInfo.Split(':');
+var connectionString = new StringBuilder();
+connectionString.Append($"Host={uri.Host};");
+connectionString.Append($"Database={uri.AbsolutePath.TrimStart('/')};");
+connectionString.Append($"Username={userInfo[0]};");
+connectionString.Append($"Password={userInfo[1]};");
+connectionString.Append("SSL Mode=Require;");
+connectionString.Append("Trust Server Certificate=true;");
+connectionString.Append("Pooling=true;");
+connectionString.Append("Minimum Pool Size=0;");
+connectionString.Append("Maximum Pool Size=100;");
+
+// Add debug logging
+Console.WriteLine($"Connection string: {connectionString}");
+
 builder.Services.AddDbContext<DataBaseDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString.ToString()));
 
 // Configure JWT authentication
 var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");

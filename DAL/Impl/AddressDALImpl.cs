@@ -19,9 +19,7 @@ namespace DAL.Impl
                 var existingAddress = _dbContext.Set<Address>()
                     .FirstOrDefault(a =>
                         a.Street == address.Street &&
-                        a.Number == address.Number &&
-                        a.Complement == address.Complement &&
-                        a.NeighborhoodId == address.NeighborhoodId);
+                        a.Number == address.Number);
 
                 if (existingAddress == null)
                 {

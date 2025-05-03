@@ -1,4 +1,5 @@
-﻿using Entities;
+﻿using Commons.Constants;
+using Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,11 +9,11 @@ namespace DAL.Mapping
     {
         public void Configure(EntityTypeBuilder<City> builder)
         {
-            builder.ToTable("city");
+            builder.ToTable(CityConstants.TableName);
 
             builder.Property(c => c.Name)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(CityConstants.NameMaxLength);
 
             builder.HasOne(c => c.State)
                 .WithMany()

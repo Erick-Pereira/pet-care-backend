@@ -1,4 +1,5 @@
-﻿using Entities;
+﻿using Commons.Constants;
+using Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,19 +9,19 @@ namespace DAL.Mapping
     {
         public void Configure(EntityTypeBuilder<Address> builder)
         {
-            builder.ToTable("address");
+            builder.ToTable(AddressConstants.TableName);
 
             builder.Property(a => a.Street)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(AddressConstants.StreetMaxLength);
 
             builder.Property(a => a.Number)
                 .IsRequired()
-                .HasMaxLength(10);
+                .HasMaxLength(AddressConstants.NumberMaxLength);
 
             builder.Property(a => a.ZipCode)
                 .IsRequired()
-                .HasMaxLength(8);
+                .HasMaxLength(AddressConstants.ZipCodeLength);
 
             builder.HasOne(a => a.Neighborhood)
                 .WithMany()

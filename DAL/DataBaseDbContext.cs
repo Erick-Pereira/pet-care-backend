@@ -1,6 +1,6 @@
-﻿using DAL.Mapping;
-using Entities;
+﻿using Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace DAL
 {
@@ -21,14 +21,7 @@ namespace DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new UserMapConfig());
-            modelBuilder.ApplyConfiguration(new AddressMapConfig());
-            modelBuilder.ApplyConfiguration(new NeighborhoodMapConfig());
-            modelBuilder.ApplyConfiguration(new CityMapConfig());
-            modelBuilder.ApplyConfiguration(new StateMapConfig());
-            modelBuilder.ApplyConfiguration(new BreedMapConfig());
-            modelBuilder.ApplyConfiguration(new SpecieMapConfig());
-            modelBuilder.ApplyConfiguration(new PetMapConfig());
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             base.OnModelCreating(modelBuilder);
         }
     }

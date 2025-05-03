@@ -4,6 +4,7 @@ using Commons.Extensions;
 using Commons.Responses;
 using DAL.UnitOfWork;
 using Entities;
+using System.Net;
 
 namespace BLL.Impl
 {
@@ -14,9 +15,10 @@ namespace BLL.Impl
 
         private readonly NeighborhoodValidator validator = new NeighborhoodValidator();
 
-        public NeighborhoodServiceImpl(IUnitOfWork unitOfWork)
+        public NeighborhoodServiceImpl(IUnitOfWork unitOfWork, ICityService cityService)
         {
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            _cityService = cityService ?? throw new ArgumentNullException(nameof(cityService));
         }
 
         public async Task<Response> Delete(Guid id)
@@ -81,12 +83,18 @@ namespace BLL.Impl
 
         public async Task<SingleResponse<Neighborhood>> FindOrCreateNew(Neighborhood neighborhood)
         {
-            var addressResponse = await _unitOfWork.NeighborhoodRepository.FindByNeighborhood(neighborhood);
-            if (addressResponse.Success.GetValueOrDefault() && addressResponse.Item != null)
-                return addressResponse;
+            var neighborhoodResult = await _unitOfWork.NeighborhoodRepository.FindByNeighborhood(neighborhood);
+            if (neighborhoodResult.Success == true && neighborhoodResult.Item != null)
+            {
+                var cityResult = await _cityService.Get(neighborhoodResult.Item.CityId);
+                if (neighborhood.City.Name.ToLower() == cityResult.Item.Name.ToLower())
+                {
+                    return neighborhoodResult;
+                }
+            }
 
             var cityResponse = await _cityService.FindOrCreateNew(neighborhood.City);
-            if (!cityResponse.Success.GetValueOrDefault() || cityResponse.Item == null)
+            if (!cityResponse.Success == true || cityResponse.Item == null)
                 return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Neighborhood>(cityResponse.Message);
 
             neighborhood.City = cityResponse.Item;
@@ -102,14 +110,18 @@ namespace BLL.Impl
 
             if (addressesUsingOldNeighborhood == 1)
             {
-                if (neighborhoodResult.Success.GetValueOrDefault() && neighborhoodResult.Item != null)
+                if (neighborhoodResult.Success == true && neighborhoodResult.Item != null)
                 {
-                    await _unitOfWork.NeighborhoodRepository.Delete(neighborhood.Id);
-                    return neighborhoodResult;
+                    var cityResult = await _cityService.Get(neighborhoodResult.Item.CityId);
+                    if (neighborhood.City.Name.ToLower() == cityResult.Item.Name.ToLower())
+                    {
+                        await _unitOfWork.NeighborhoodRepository.Delete(neighborhood.Id);
+                        return neighborhoodResult;
+                    }
                 }
 
                 var cityResponse = await _cityService.FindOrCreateOrSwitch(neighborhood.City);
-                if (!cityResponse.Success.GetValueOrDefault() || cityResponse.Item == null)
+                if (!cityResponse.Success == true || cityResponse.Item == null)
                     return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Neighborhood>(cityResponse.Message);
 
                 neighborhood.City = cityResponse.Item;
@@ -118,11 +130,17 @@ namespace BLL.Impl
             }
             else
             {
-                if (neighborhoodResult.Success.GetValueOrDefault() && neighborhoodResult.Item != null)
-                    return neighborhoodResult;
+                if (neighborhoodResult.Success == true && neighborhoodResult.Item != null)
+                {
+                    var cityResult = await _cityService.Get(neighborhoodResult.Item.CityId);
+                    if (neighborhood.City.Name.ToLower() == cityResult.Item.Name.ToLower())
+                    {
+                        return neighborhoodResult;
+                    }
+                }
 
                 var cityResponse = await _cityService.FindOrCreateOrSwitch(neighborhood.City);
-                if (!cityResponse.Success.GetValueOrDefault() || cityResponse.Item == null)
+                if (!cityResponse.Success == true || cityResponse.Item == null)
                     return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Neighborhood>(cityResponse.Message);
 
                 neighborhood.City = cityResponse.Item;

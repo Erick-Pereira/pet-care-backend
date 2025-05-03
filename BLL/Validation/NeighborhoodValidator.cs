@@ -1,3 +1,4 @@
+using Commons.Constants;
 using Entities;
 using FluentValidation;
 
@@ -8,11 +9,12 @@ namespace BLL.Validation
         public NeighborhoodValidator()
         {
             RuleFor(neighborhood => neighborhood.Name)
-                .NotEmpty().WithMessage("Neighborhood name cannot be empty.")
-                .MaximumLength(60).WithMessage("Neighborhood name cannot exceed 60 characters.");
+                .NotEmpty().WithMessage(ValidationMessages.NeighborhoodNameEmpty)
+                .MaximumLength(NeighborhoodConstants.NameMaxLength)
+                    .WithMessage(ValidationMessages.NeighborhoodNameMaxLength);
 
             RuleFor(neighborhood => neighborhood.City)
-                .NotNull().WithMessage("City name cannot be null.");
+                .NotNull().WithMessage(ValidationMessages.CityNull);
         }
     }
 }

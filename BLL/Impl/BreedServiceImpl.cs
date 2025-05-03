@@ -1,5 +1,6 @@
 using BLL.Interfaces;
 using BLL.Validation;
+using Commons.Constants;
 using Commons.Extensions;
 using Commons.Responses;
 using DAL.UnitOfWork;
@@ -55,6 +56,28 @@ namespace BLL.Impl
             }
 
             return await _unitOfWork.BreedRepository.Update(item);
+        }
+
+        public async Task<SingleResponse<Breed>> ToggleActive(Guid id)
+        {
+            try
+            {
+                var entity = await _unitOfWork.BreedRepository.Get(id);
+                if (!entity.Success == true || entity.Item == null)
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Breed>(ErrorMessages.BreedNotFound);
+
+                entity.Item.Active = !entity.Item.Active;
+                var updateResponse = await _unitOfWork.BreedRepository.Update(entity.Item);
+
+                if (!updateResponse.Success == true)
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Breed>(updateResponse.Message);
+
+                return ResponseFactory.CreateSuccessSingleResponse(entity.Item);
+            }
+            catch (Exception ex)
+            {
+                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Breed>(ErrorMessages.ErrorTogglingBreedStatus, ex);
+            }
         }
     }
 }
