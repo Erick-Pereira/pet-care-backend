@@ -66,5 +66,27 @@ namespace BLL.Impl
 
             return await _unitOfWork.StateRepository.FindByAbreviation(abreviation);
         }
+
+        public async Task<SingleResponse<State>> ToggleActive(Guid id)
+        {
+            try
+            {
+                var entity = await _unitOfWork.StateRepository.Get(id);
+                if (!entity.Success == true || entity.Item == null)
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<State>("State not found");
+
+                entity.Item.Active = !entity.Item.Active;
+                var updateResponse = await _unitOfWork.StateRepository.Update(entity.Item);
+
+                if (!updateResponse.Success == true)
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<State>(updateResponse.Message);
+
+                return ResponseFactory.CreateSuccessSingleResponse(entity.Item);
+            }
+            catch (Exception ex)
+            {
+                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<State>("Error toggling state status", ex);
+            }
+        }
     }
 }

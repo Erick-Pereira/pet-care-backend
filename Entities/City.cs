@@ -2,7 +2,7 @@
 {
     public class City : Entity
     {
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; set; }
 
         public Guid StateId { get; set; }
         public State State { get; set; }

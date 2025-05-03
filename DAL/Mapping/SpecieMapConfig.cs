@@ -1,3 +1,4 @@
+using Commons.Constants;
 using Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -8,14 +9,18 @@ namespace DAL.Mapping
     {
         public void Configure(EntityTypeBuilder<Specie> builder)
         {
-            builder.ToTable("specie");
+            builder.ToTable(SpecieConstants.TableName);
 
             builder.Property(s => s.Name)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(SpecieConstants.NameMaxLength);
 
             builder.Property(s => s.Description)
-                .HasMaxLength(500);
+                .HasMaxLength(SpecieConstants.DescriptionMaxLength);
+
+            builder.HasIndex(s => s.Name)
+                .IsUnique()
+                .HasDatabaseName(SpecieConstants.UniqueIndexName);
         }
     }
 }

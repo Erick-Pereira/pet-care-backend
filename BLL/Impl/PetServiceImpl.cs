@@ -10,12 +10,14 @@ namespace BLL.Impl
     public class PetServiceImpl : IPetService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly PetValidator validator;
+        private readonly PetValidator petValidator;
+        private readonly UserValidator userValidator;
 
         public PetServiceImpl(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-            validator = new PetValidator();
+            petValidator = new PetValidator();
+            userValidator = new UserValidator();
         }
 
         public async Task<Response> Delete(Guid id)
@@ -35,7 +37,7 @@ namespace BLL.Impl
 
         public async Task<Response> Insert(Pet item)
         {
-            var validationResult = validator.Validate(item);
+            var validationResult = petValidator.Validate(item);
 
             if (!validationResult.IsValid)
             {
@@ -47,7 +49,7 @@ namespace BLL.Impl
 
         public async Task<Response> Update(Pet item)
         {
-            var validationResult = validator.Validate(item);
+            var validationResult = petValidator.Validate(item);
             if (!validationResult.IsValid)
             {
                 return validationResult.ToResponse();
@@ -57,8 +59,13 @@ namespace BLL.Impl
 
         public async Task<Response> RegisterPetWithOwner(Pet request)
         {
-            // Validate the pet and owner
-            var petValidationResult = validator.Validate(request);
+            var petValidationResult = petValidator.Validate(request);
+            if (!petValidationResult.IsValid)
+            {
+                return petValidationResult.ToResponse();
+            }
+
+            var userValidationResult = userValidator.Validate(request.Owner);
             if (!petValidationResult.IsValid)
             {
                 return petValidationResult.ToResponse();
@@ -76,6 +83,28 @@ namespace BLL.Impl
             // Insert pet into the database
             var petResponse = await _unitOfWork.PetRepository.Insert(request);
             return (bool)!petResponse.Success ? petResponse : ResponseFactory.CreateInstance().CreateSuccessResponse("Pet and owner registered successfully.");
+        }
+
+        public async Task<SingleResponse<Pet>> ToggleActive(Guid id)
+        {
+            try
+            {
+                var entity = await _unitOfWork.PetRepository.Get(id);
+                if (!entity.Success == true || entity.Item == null)
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Pet>("Pet not found");
+
+                entity.Item.Active = !entity.Item.Active;
+                var updateResponse = await _unitOfWork.PetRepository.Update(entity.Item);
+
+                if (!updateResponse.Success == true)
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Pet>(updateResponse.Message);
+
+                return ResponseFactory.CreateSuccessSingleResponse(entity.Item);
+            }
+            catch (Exception ex)
+            {
+                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Pet>("Error toggling pet status", ex);
+            }
         }
     }
 }

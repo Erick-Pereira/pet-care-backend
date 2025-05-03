@@ -1,22 +1,21 @@
-using BLL.Interfaces;
+﻿using BLL.Interfaces;
 using Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using web_api.Controllers;
 using web_api.Services;
 
-namespace WebApi.Controllers
+namespace web_api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class PetController : ControllerBase, IController<Pet>
+    public class BreedController : ControllerBase, IController<Breed>
     {
-        private readonly IPetService _petService;
+        private readonly IBreedService _breedService;
 
-        public PetController(IPetService petService)
+        public BreedController(IBreedService breedService)
         {
-            _petService = petService ?? throw new ArgumentNullException(nameof(petService));
+            _breedService = breedService ?? throw new ArgumentNullException(nameof(breedService));
         }
 
         [HttpGet]
@@ -24,7 +23,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var response = await _petService.Get(skip, take);
+                var response = await _breedService.Get(skip, take);
                 return response.Success == true
                     ? Ok(new { response.Success, response.Message, response.Data })
                     : BadRequest(new { response.Success, response.Message });
@@ -40,7 +39,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var response = await _petService.Get(id);
+                var response = await _breedService.Get(id);
                 return response.Success == true
                     ? Ok(new { response.Success, response.Message, response.Item })
                     : BadRequest(new { response.Success, response.Message });
@@ -52,11 +51,12 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Pet request)
+        [Permission("Admin")]
+        public async Task<IActionResult> Create([FromBody] Breed request)
         {
             try
             {
-                var response = await _petService.Insert(request);
+                var response = await _breedService.Insert(request);
                 return response.Success == true
                     ? Ok(new { response.Success, response.Message })
                     : BadRequest(new { response.Success, response.Message });
@@ -69,12 +69,12 @@ namespace WebApi.Controllers
 
         [HttpPut("{id}")]
         [Permission("Admin")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] Pet request)
+        public async Task<IActionResult> Update(Guid id, [FromBody] Breed request)
         {
             try
             {
                 request.Id = id;
-                var response = await _petService.Update(request);
+                var response = await _breedService.Update(request);
                 return response.Success == true
                     ? Ok(new { response.Success, response.Message })
                     : BadRequest(new { response.Success, response.Message });
@@ -91,7 +91,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var response = await _petService.Delete(id);
+                var response = await _breedService.Delete(id);
                 return response.Success == true
                     ? Ok(new { response.Success, response.Message })
                     : BadRequest(new { response.Success, response.Message });
@@ -108,30 +108,14 @@ namespace WebApi.Controllers
         {
             try
             {
-                var response = await _petService.ToggleActive(id);
+                var response = await _breedService.ToggleActive(id);
                 return response.Success == true
                     ? Ok(new
                     {
-                        response.Success,
-                        response.Message
+                        Success = true,
+                        Message = $"Breed {(response.Item?.Active == true ? "activated" : "deactivated")} successfully"
                     })
-                    : BadRequest(new { response.Success, response.Message });
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, new { Success = false, Message = "Internal server error" });
-            }
-        }
-
-        [HttpPost("register")]
-        public async Task<IActionResult> RegisterPet([FromBody] Pet request)
-        {
-            try
-            {
-                var response = await _petService.RegisterPetWithOwner(request);
-                return response.Success == true
-                    ? Ok(new { response.Success, response.Message })
-                    : BadRequest(new { response.Success, response.Message });
+                    : BadRequest(new { Success = false, Message = response.Message });
             }
             catch (Exception)
             {

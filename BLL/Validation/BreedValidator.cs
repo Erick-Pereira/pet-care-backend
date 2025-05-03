@@ -1,3 +1,4 @@
+using Commons.Constants;
 using Entities;
 using FluentValidation;
 
@@ -8,8 +9,13 @@ namespace BLL.Validation
         public BreedValidator()
         {
             RuleFor(breed => breed.Name)
-                .NotEmpty().WithMessage("Breed name cannot be empty.")
-                .MaximumLength(60).WithMessage("Breed name cannot exceed 60 characters.");
+                .NotEmpty().WithMessage(ValidationMessages.BreedNameEmpty)
+                .MaximumLength(BreedConstants.NameMaxLength)
+                    .WithMessage(ValidationMessages.BreedNameMaxLength);
+
+            RuleFor(breed => breed.Description)
+                .MaximumLength(BreedConstants.DescriptionMaxLength)
+                .WithMessage(String.Format(ValidationMessages.BreedDescriptionMaxLength, BreedConstants.DescriptionMaxLength));
         }
     }
 }

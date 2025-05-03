@@ -1,4 +1,5 @@
-﻿using Entities;
+﻿using Commons.Constants;
+using Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,19 +9,24 @@ namespace DAL.Mapping
     {
         public void Configure(EntityTypeBuilder<State> builder)
         {
-            builder.ToTable("state");
+            builder.ToTable(StateConstants.TableName);
 
             builder.Property(s => s.Name)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(StateConstants.NameMaxLength);
 
             builder.Property(s => s.Abreviation)
                 .IsRequired()
-                .HasMaxLength(3)
+                .HasMaxLength(StateConstants.AbreviationMaxLength)
                 .IsUnicode(false);
 
             builder.HasIndex(s => s.Abreviation)
-                .IsUnique();
+                .IsUnique()
+                .HasDatabaseName(StateConstants.AbreviationUniqueIndexName);
+
+            builder.HasIndex(s => s.Name)
+                .IsUnique()
+                .HasDatabaseName(StateConstants.NameUniqueIndexName);
         }
     }
 }

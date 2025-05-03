@@ -102,11 +102,11 @@ namespace Commons.Validators
             if (string.IsNullOrWhiteSpace(password))
                 return ResponseFactory.CreateFailedResponse(ValidationMessages.PasswordNotNull);
 
-            if (password.Length < PasswordConstants.MinLength)
-                return ResponseFactory.CreateFailedResponse(string.Format(ValidationMessages.PasswordMinLength, PasswordConstants.MinLength));
+            if (password.Length < UserConstants.PasswordMinLength)
+                return ResponseFactory.CreateFailedResponse(string.Format(ValidationMessages.PasswordMinLength, UserConstants.PasswordMinLength));
 
-            if (password.Length > PasswordConstants.MaxLength)
-                return ResponseFactory.CreateFailedResponse(string.Format(ValidationMessages.PasswordMaxLength, PasswordConstants.MaxLength));
+            if (password.Length > UserConstants.PasswordMaxLength)
+                return ResponseFactory.CreateFailedResponse(string.Format(ValidationMessages.PasswordMaxLength, UserConstants.PasswordMaxLength));
 
             if (!Regex.IsMatch(password, "[A-Z]"))
                 return ResponseFactory.CreateFailedResponse(ValidationMessages.PasswordMissingUppercase);

@@ -1,4 +1,5 @@
-﻿using Entities;
+﻿using Commons.Constants;
+using Entities;
 using FluentValidation;
 
 namespace BLL.Validation
@@ -8,20 +9,26 @@ namespace BLL.Validation
         public AddressValidator()
         {
             RuleFor(address => address)
-                .NotNull().WithMessage("Address cannot be null.");
+                .NotNull().WithMessage(ValidationMessages.AddressNotNull);
+
+            RuleFor(address => address.Street)
+                .NotEmpty().WithMessage(ValidationMessages.StreetEmpty)
+                .MaximumLength(AddressConstants.StreetMaxLength)
+                .WithMessage(String.Format(ValidationMessages.StreetMaxLength, AddressConstants.StreetMaxLength));
 
             RuleFor(address => address.ZipCode)
-               .NotEmpty().WithMessage("Zip code cannot be empty.")
-               .Matches("^\\d{9}$").WithMessage("Zip code must contain exactly 9 numeric characters.");
+               .NotEmpty().WithMessage(ValidationMessages.ZipCodeEmpty)
+               .Matches(AddressConstants.ZipCodeRegex).WithMessage(ValidationMessages.ZipCodeFormat);
 
             RuleFor(address => address.Complement)
-               .MaximumLength(60).WithMessage("Complement cannot exceed 60 characters.");
+               .MaximumLength(AddressConstants.ComplementMaxLength)
+                .WithMessage(String.Format(ValidationMessages.ComplementMaxLength, AddressConstants.ComplementMaxLength));
 
             RuleFor(address => address.Number)
-                .MaximumLength(6).WithMessage("Number cannot exceed 6 characters.");
-
+                .MaximumLength(AddressConstants.NumberMaxLength)
+                .WithMessage(String.Format(ValidationMessages.NumberMaxLength, AddressConstants.NumberMaxLength));
             RuleFor(address => address.Neighborhood)
-                .NotNull().WithMessage("Neighborhood cannot be null.");
+                .NotNull().WithMessage(ValidationMessages.NeighborhoodNotNull);
         }
     }
 }

@@ -1,3 +1,4 @@
+using Commons.Constants;
 using Entities;
 using Entities.Enums;
 using FluentValidation;
@@ -9,30 +10,37 @@ namespace BLL.Validation
         public PetValidator()
         {
             RuleFor(pet => pet.Name)
-                .NotEmpty().WithMessage("Name is required.")
-                .MinimumLength(3).WithMessage("Name must be at least 3 characters long.")
-                .MaximumLength(100).WithMessage("Name must not exceed 100 characters.");
+                .NotEmpty().WithMessage(ValidationMessages.PetNameRequired)
+                .MinimumLength(PetConstants.NameMinLength).WithMessage(ValidationMessages.PetNameMinLength)
+                .MaximumLength(PetConstants.NameMaxLength).WithMessage(ValidationMessages.PetNameMaxLength);
 
             RuleFor(pet => pet.Specie)
-                .NotNull().WithMessage("Species is required.");
+                .NotNull().WithMessage(ValidationMessages.SpecieRequired);
 
             RuleFor(pet => pet.Gender)
-                .NotEmpty().WithMessage("Gender is required.")
-                .Must(gender => gender.Equals(Gender.Male) || gender.Equals(Gender.Female)).WithMessage("Gender must be either 'Male' or 'Female'.");
+                .NotEmpty().WithMessage(ValidationMessages.GenderRequired)
+                .Must(gender => gender.Equals(Gender.Male) || gender.Equals(Gender.Female))
+                .WithMessage(ValidationMessages.GenderInvalid);
 
             RuleFor(pet => pet.ApproximateBirthDate)
-                .LessThanOrEqualTo(DateTime.Now).WithMessage("Approximate birth date cannot be in the future.")
+                .LessThanOrEqualTo(DateTime.Now).WithMessage(ValidationMessages.BirthDateFuture)
                 .When(pet => pet.ApproximateBirthDate.HasValue);
 
             RuleFor(pet => pet.Color)
-                .NotEmpty().WithMessage("Color is required.")
-                .MaximumLength(60).WithMessage("Color must not exceed 60 characters.");
+                .NotEmpty().WithMessage(ValidationMessages.ColorRequired)
+                .MaximumLength(PetConstants.ColorMaxLength).WithMessage(ValidationMessages.ColorMaxLength);
 
             RuleFor(pet => pet.Acquisition)
-                .NotEmpty().WithMessage("Acquisition method is required.");
+                .NotEmpty().WithMessage(ValidationMessages.AcquisitionRequired);
 
             RuleFor(pet => pet.IsCastrated)
-                .NotNull().WithMessage("Castration status is required.");
+                .NotNull().WithMessage(ValidationMessages.CastrationRequired);
+
+            RuleFor(pet => pet.IsChipped)
+                .NotNull().WithMessage(ValidationMessages.ChipRequired);
+
+            RuleFor(pet => pet.ChipNumber)
+                .MaximumLength(PetConstants.ChipNumberMaxLength).WithMessage(ValidationMessages.ChipNumberMaxLength);
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     public class Neighborhood : Entity
     {
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; set; }
         public City City { get; set; }
         public Guid CityId { get; set; }
     }

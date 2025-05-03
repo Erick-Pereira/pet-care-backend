@@ -1,3 +1,4 @@
+using Commons.Constants;
 using Entities;
 using FluentValidation;
 
@@ -8,11 +9,12 @@ namespace BLL.Validation
         public CityValidator()
         {
             RuleFor(city => city.Name)
-                .NotEmpty().WithMessage("City name cannot be empty.")
-                .MaximumLength(60).WithMessage("City name cannot exceed 60 characters.");
+                .NotEmpty().WithMessage(ValidationMessages.CityNameEmpty)
+                .MaximumLength(CityConstants.NameMaxLength)
+                    .WithMessage(ValidationMessages.CityNameMaxLength);
 
             RuleFor(city => city.State)
-                .NotNull().WithMessage("State cannot be null.");
+                .NotNull().WithMessage(ValidationMessages.StateNull);
         }
     }
 }

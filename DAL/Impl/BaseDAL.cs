@@ -67,6 +67,40 @@ namespace DAL.Impl
             }
         }
 
+        public virtual async Task<SingleResponse<T>> GetActive(Guid id)
+        {
+            try
+            {
+                var entity = await _dbContext.Set<T>().AsNoTracking().FirstOrDefaultAsync(e => e.Id == id && e.Active == true);
+                if (entity == null)
+                {
+                    _logger.LogWarning("Get failed: Entity {EntityId} not found.", id);
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponseNotFoundItem<T>();
+                }
+
+                _logger.LogInformation("Entity {EntityId} retrieved successfully.", id);
+                return ResponseFactory.CreateSuccessSingleResponse(entity);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving entity {EntityId}.", id);
+                return ResponseFactory.CreateInstance().CreateFailedSingleResponseNotFoundItem<T>(ex);
+            }
+        }
+
+        public virtual async Task<DataResponse<T>> GetActive(int skip, int take)
+        {
+            try
+            {
+                var entities = await _dbContext.Set<T>().Where(e => e.Active == true).Skip(skip).Take(take).ToListAsync();
+                return ResponseFactory.CreateInstance().CreateSuccessDataResponse(entities);
+            }
+            catch (Exception ex)
+            {
+                return ResponseFactory.CreateInstance().CreateFailedDataResponse<T>(ex);
+            }
+        }
+
         public virtual async Task<SingleResponse<T>> Get(Guid id)
         {
             try

@@ -9,7 +9,7 @@ namespace DAL.Mapping
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.ToTable("user");
+            builder.ToTable(UserConstants.TableName);
 
             builder.Property(u => u.FullName)
                 .IsRequired()
@@ -20,15 +20,21 @@ namespace DAL.Mapping
                 .HasMaxLength(UserConstants.EmailMaxLength);
 
             builder.Property(u => u.PhoneNumber)
-                .IsRequired();
+                .IsRequired()
+                .HasMaxLength(UserConstants.PhoneNumberMaxLength);
 
             builder.Property(u => u.Password)
-                .IsRequired();
+                .IsRequired()
+                .HasMaxLength(255);
 
             builder.HasOne(u => u.Address)
                 .WithMany()
                 .HasForeignKey(u => u.AddressId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasIndex(u => u.Email)
+                .IsUnique()
+                .HasDatabaseName(UserConstants.EmailUniqueIndexName);
         }
     }
 }

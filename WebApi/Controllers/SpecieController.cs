@@ -1,22 +1,21 @@
-using BLL.Interfaces;
+﻿using BLL.Interfaces;
 using Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using web_api.Controllers;
 using web_api.Services;
 
-namespace WebApi.Controllers
+namespace web_api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class PetController : ControllerBase, IController<Pet>
+    public class SpecieController : ControllerBase, IController<Specie>
     {
-        private readonly IPetService _petService;
+        private readonly ISpecieService _specieService;
 
-        public PetController(IPetService petService)
+        public SpecieController(ISpecieService specieService)
         {
-            _petService = petService ?? throw new ArgumentNullException(nameof(petService));
+            _specieService = specieService ?? throw new ArgumentNullException(nameof(specieService));
         }
 
         [HttpGet]
@@ -24,12 +23,12 @@ namespace WebApi.Controllers
         {
             try
             {
-                var response = await _petService.Get(skip, take);
+                var response = await _specieService.Get(skip, take);
                 return response.Success == true
                     ? Ok(new { response.Success, response.Message, response.Data })
                     : BadRequest(new { response.Success, response.Message });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return StatusCode(500, new { Success = false, Message = "Internal server error" });
             }
@@ -40,28 +39,29 @@ namespace WebApi.Controllers
         {
             try
             {
-                var response = await _petService.Get(id);
+                var response = await _specieService.Get(id);
                 return response.Success == true
-                    ? Ok(new { response.Success, response.Message, response.Item })
+                    ? Ok(new { response.Success, response.Message, Data = response.Item })
                     : BadRequest(new { response.Success, response.Message });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return StatusCode(500, new { Success = false, Message = "Internal server error" });
             }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Pet request)
+        [Permission("Admin")]
+        public async Task<IActionResult> Create([FromBody] Specie request)
         {
             try
             {
-                var response = await _petService.Insert(request);
+                var response = await _specieService.Insert(request);
                 return response.Success == true
                     ? Ok(new { response.Success, response.Message })
                     : BadRequest(new { response.Success, response.Message });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return StatusCode(500, new { Success = false, Message = "Internal server error" });
             }
@@ -69,12 +69,12 @@ namespace WebApi.Controllers
 
         [HttpPut("{id}")]
         [Permission("Admin")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] Pet request)
+        public async Task<IActionResult> Update(Guid id, [FromBody] Specie request)
         {
             try
             {
                 request.Id = id;
-                var response = await _petService.Update(request);
+                var response = await _specieService.Update(request);
                 return response.Success == true
                     ? Ok(new { response.Success, response.Message })
                     : BadRequest(new { response.Success, response.Message });
@@ -91,7 +91,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var response = await _petService.Delete(id);
+                var response = await _specieService.Delete(id);
                 return response.Success == true
                     ? Ok(new { response.Success, response.Message })
                     : BadRequest(new { response.Success, response.Message });
@@ -108,29 +108,13 @@ namespace WebApi.Controllers
         {
             try
             {
-                var response = await _petService.ToggleActive(id);
+                var response = await _specieService.ToggleActive(id);
                 return response.Success == true
                     ? Ok(new
                     {
                         response.Success,
                         response.Message
                     })
-                    : BadRequest(new { response.Success, response.Message });
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, new { Success = false, Message = "Internal server error" });
-            }
-        }
-
-        [HttpPost("register")]
-        public async Task<IActionResult> RegisterPet([FromBody] Pet request)
-        {
-            try
-            {
-                var response = await _petService.RegisterPetWithOwner(request);
-                return response.Success == true
-                    ? Ok(new { response.Success, response.Message })
                     : BadRequest(new { response.Success, response.Message });
             }
             catch (Exception)

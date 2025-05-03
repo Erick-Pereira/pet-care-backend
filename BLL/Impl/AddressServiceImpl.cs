@@ -82,11 +82,19 @@ namespace BLL.Impl
         public async Task<SingleResponse<Address>> FindOrCreateNew(Address address)
         {
             var addressResponse = await _unitOfWork.AddressRepository.FindByAddress(address);
-            if (addressResponse.Success.GetValueOrDefault() && addressResponse.Item != null)
-                return addressResponse;
+
+            if (addressResponse.Success == true && addressResponse.Item != null)
+            {
+                var neghboorhoodResponse = await _neighborhoodService.Get(addressResponse.Item.NeighborhoodId);
+
+                if (address.Neighborhood.Name.ToLower() == neghboorhoodResponse.Item.Name.ToLower())
+                {
+                    return addressResponse;
+                }
+            }
 
             var neighborhoodResponse = await _neighborhoodService.FindOrCreateNew(address.Neighborhood);
-            if (!neighborhoodResponse.Success.GetValueOrDefault() || neighborhoodResponse.Item == null)
+            if (!neighborhoodResponse.Success == true || neighborhoodResponse.Item == null)
                 return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Address>(neighborhoodResponse.Message);
 
             address.Neighborhood = neighborhoodResponse.Item;
@@ -102,14 +110,19 @@ namespace BLL.Impl
 
             if (usersUsingOldAddress == 1)
             {
-                if (addressResult.Success.GetValueOrDefault() && addressResult.Item != null)
+                if (addressResult.Success == true && addressResult.Item != null)
                 {
-                    await _unitOfWork.AddressRepository.Delete(address.Id);
-                    return addressResult;
+                    var neghboorhoodResponse = await _neighborhoodService.Get(addressResult.Item.NeighborhoodId);
+
+                    if (address.Neighborhood.Name.ToLower() == neghboorhoodResponse.Item.Name.ToLower())
+                    {
+                        await _unitOfWork.AddressRepository.Delete(address.Id);
+                        return addressResult;
+                    }
                 }
 
                 var neighborhoodResponse = await _neighborhoodService.FindOrCreateOrSwitch(address.Neighborhood);
-                if (!neighborhoodResponse.Success.GetValueOrDefault() || neighborhoodResponse.Item == null)
+                if (!neighborhoodResponse.Success == true || neighborhoodResponse.Item == null)
                     return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Address>(neighborhoodResponse.Message);
 
                 address.Neighborhood = neighborhoodResponse.Item;
@@ -117,11 +130,18 @@ namespace BLL.Impl
             }
             else
             {
-                if (addressResult.Success.GetValueOrDefault() && addressResult.Item != null)
-                    return addressResult;
+                if (addressResult.Success == true && addressResult.Item != null)
+                {
+                    var neghboorhoodResponse = await _neighborhoodService.Get(addressResult.Item.NeighborhoodId);
+
+                    if (address.Neighborhood.Name.ToLower() == neghboorhoodResponse.Item.Name.ToLower())
+                    {
+                        return addressResult;
+                    }
+                }
 
                 var neighborhoodResponse = await _neighborhoodService.FindOrCreateOrSwitch(address.Neighborhood);
-                if (!neighborhoodResponse.Success.GetValueOrDefault() || neighborhoodResponse.Item == null)
+                if (!neighborhoodResponse.Success == true || neighborhoodResponse.Item == null)
                     return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Address>(neighborhoodResponse.Message);
 
                 address.Neighborhood = neighborhoodResponse.Item;

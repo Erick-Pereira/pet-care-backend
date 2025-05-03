@@ -7,5 +7,7 @@ namespace BLL.Interfaces
     public interface IStateService : ICRUD<State>
     {
         Task<SingleResponse<State>> FindByAbreviation(string name);
+
+        Task<SingleResponse<State>> ToggleActive(Guid id);
     }
 }

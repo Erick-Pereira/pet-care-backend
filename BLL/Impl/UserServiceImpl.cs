@@ -1,13 +1,15 @@
-﻿using BLL.Interfaces;
+﻿using Azure.Core;
+using BLL.Interfaces;
 using BLL.Validation;
 using Commons.Extensions;
+using Commons.Interfaces;
 using Commons.Responses;
 using DAL.UnitOfWork;
 using Entities;
 
 namespace BLL.Impl
 {
-    public class UserServiceImpl : IUserService
+    public class UserServiceImpl : ICRUD<User>, IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAddressService _addressService;
@@ -43,11 +45,11 @@ namespace BLL.Impl
             if (!validationResult.IsValid)
                 return validationResult.ToResponse();
 
-            // Hash da senha antes de salvar
+            item.PhoneNumber = item.PhoneNumber.StringCleaner();
             item.Password = await _hashService.HashPasswordAsync(item.Password);
 
             var addressResponse = await _addressService.FindOrCreateNew(item.Address);
-            if (!addressResponse.Success.GetValueOrDefault() || addressResponse.Item == null)
+            if (addressResponse.Success == true && addressResponse.Item != null)
             {
                 item.AddressId = addressResponse.Item.Id;
                 item.Address = addressResponse.Item;
@@ -73,6 +75,11 @@ namespace BLL.Impl
             }
 
             return await _unitOfWork.UserRepository.Update(item);
+        }
+
+        public async Task<SingleResponse<User>> GetByEmail(string email)
+        {
+            return await _unitOfWork.UserRepository.GetByEmail(email);
         }
     }
 }

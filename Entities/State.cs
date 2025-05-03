@@ -2,7 +2,7 @@
 {
     public class State : Entity
     {
-        public string Name { get; set; } = string.Empty;
-        public string Abreviation { get; set; } = string.Empty;
+        public string Name { get; set; }
+        public string Abreviation { get; set; }
     }
 }
