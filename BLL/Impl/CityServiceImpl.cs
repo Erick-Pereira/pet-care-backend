@@ -6,6 +6,7 @@ using DAL.UnitOfWork;
 using Entities;
 using System.Net;
 
+
 namespace BLL.Impl
 {
     public class CityServiceImpl : ICityService
@@ -83,6 +84,7 @@ namespace BLL.Impl
         public async Task<SingleResponse<City>> FindOrCreateNew(City city)
         {
             var cityResponse = await _unitOfWork.CityRepository.FindByName(city);
+
             if (cityResponse.Success == true && cityResponse.Item != null)
             {
                 var stateResult = await _stateService.Get(cityResponse.Item.StateId);
@@ -109,6 +111,7 @@ namespace BLL.Impl
 
             if (neighborhoodsUsingOldCity == 1)
             {
+
                 if (cityResult.Success == true && cityResult.Item != null)
                 {
                     var stateResult = await _stateService.Get(cityResult.Item.StateId);
@@ -130,6 +133,7 @@ namespace BLL.Impl
             }
             else
             {
+
                 if (cityResult.Success == true && cityResult.Item != null)
                 {
                     var stateResult = await _stateService.Get(cityResult.Item.StateId);

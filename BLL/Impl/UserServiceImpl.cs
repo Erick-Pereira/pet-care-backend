@@ -45,6 +45,7 @@ namespace BLL.Impl
             if (!validationResult.IsValid)
                 return validationResult.ToResponse();
 
+
             item.PhoneNumber = item.PhoneNumber.StringCleaner();
             item.Password = await _hashService.HashPasswordAsync(item.Password);
 

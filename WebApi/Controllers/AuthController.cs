@@ -11,6 +11,7 @@ namespace web_api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly JwtService _jwtService;
+
         private readonly IUserService _userService;
         private readonly IHashService _hashService;
 
@@ -24,6 +25,7 @@ namespace web_api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto request)
         {
+
             var userResponse = await _userService.GetByEmail(request.Username);
             if (!userResponse.Success.GetValueOrDefault() || userResponse.Item == null)
                 return Unauthorized("Invalid username or password.");
