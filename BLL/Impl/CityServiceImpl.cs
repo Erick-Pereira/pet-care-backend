@@ -4,8 +4,6 @@ using Commons.Extensions;
 using Commons.Responses;
 using DAL.UnitOfWork;
 using Entities;
-using System.Net;
-
 
 namespace BLL.Impl
 {
@@ -111,7 +109,6 @@ namespace BLL.Impl
 
             if (neighborhoodsUsingOldCity == 1)
             {
-
                 if (cityResult.Success == true && cityResult.Item != null)
                 {
                     var stateResult = await _stateService.Get(cityResult.Item.StateId);
@@ -133,7 +130,6 @@ namespace BLL.Impl
             }
             else
             {
-
                 if (cityResult.Success == true && cityResult.Item != null)
                 {
                     var stateResult = await _stateService.Get(cityResult.Item.StateId);

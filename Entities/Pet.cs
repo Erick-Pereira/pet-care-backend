@@ -10,7 +10,7 @@ namespace Entities
         public Guid BreedId { get; set; }
         public Breed Breed { get; set; }
         public Gender Gender { get; set; }
-        public DateTime? ApproximateBirthDate { get; set; }
+        public DateOnly? ApproximateBirthDate { get; set; }
         public string Color { get; set; }
         public string Acquisition { get; set; }
         public bool IsCastrated { get; set; }
@@ -18,5 +18,9 @@ namespace Entities
         public string ChipNumber { get; set; }
         public Guid OwnerId { get; set; }
         public User Owner { get; set; }
+
+        public byte[] ProfilePhoto { get; set; }
+
+        public ICollection<PetPhoto> Photos { get; set; } = new List<PetPhoto>();
     }
 }

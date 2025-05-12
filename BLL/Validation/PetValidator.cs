@@ -23,7 +23,8 @@ namespace BLL.Validation
                 .WithMessage(ValidationMessages.GenderInvalid);
 
             RuleFor(pet => pet.ApproximateBirthDate)
-                .LessThanOrEqualTo(DateTime.Now).WithMessage(ValidationMessages.BirthDateFuture)
+                .Must(birthDate => !birthDate.HasValue || birthDate.Value <= DateOnly.FromDateTime(DateTime.Now))
+                .WithMessage(ValidationMessages.BirthDateFuture)
                 .When(pet => pet.ApproximateBirthDate.HasValue);
 
             RuleFor(pet => pet.Color)

@@ -4,7 +4,6 @@ using Commons.Extensions;
 using Commons.Responses;
 using DAL.UnitOfWork;
 using Entities;
-using System.Net;
 
 namespace BLL.Impl
 {

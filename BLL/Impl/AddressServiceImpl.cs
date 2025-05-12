@@ -83,7 +83,6 @@ namespace BLL.Impl
         {
             var addressResponse = await _unitOfWork.AddressRepository.FindByAddress(address);
 
-
             if (addressResponse.Success == true && addressResponse.Item != null)
             {
                 var neghboorhoodResponse = await _neighborhoodService.Get(addressResponse.Item.NeighborhoodId);
@@ -111,7 +110,6 @@ namespace BLL.Impl
 
             if (usersUsingOldAddress == 1)
             {
-
                 if (addressResult.Success == true && addressResult.Item != null)
                 {
                     var neghboorhoodResponse = await _neighborhoodService.Get(addressResult.Item.NeighborhoodId);
@@ -132,7 +130,6 @@ namespace BLL.Impl
             }
             else
             {
-
                 if (addressResult.Success == true && addressResult.Item != null)
                 {
                     var neghboorhoodResponse = await _neighborhoodService.Get(addressResult.Item.NeighborhoodId);

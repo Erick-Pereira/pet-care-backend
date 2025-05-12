@@ -10,5 +10,6 @@
         public string PermissionLevel { get; set; } = "User";
         public Guid AddressId { get; set; }
         public Address Address { get; set; }
+        public byte[] ProfilePhoto { get; set; }
     }
 }
