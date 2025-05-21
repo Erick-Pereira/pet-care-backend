@@ -4,11 +4,6 @@ using Commons.Extensions;
 using Commons.Responses;
 using DAL.UnitOfWork;
 using Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLL.Impl
 {

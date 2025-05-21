@@ -13,6 +13,12 @@ namespace DAL.UnitOfWork
         private IAddressDAL? _addressRepository;
         private IBreedDAL? _breedRepository;
         private ICityDAL? _cityRepository;
+        private IDiagnosisDAL? _diagnosisRepository;
+        private IDocumentAttachmentDAL? _documentAttachmentRepository;
+        private IDocumentDAL? _documentRepository;
+        private IExamDAL? _examRepository;
+        private IMedicalAttachmentDAL? _medicalAttachmentRepository;
+        private IMedicalEventDAL? _medicalEventRepository;
         private IMedicationDAL? _medicationRepository;
         private INeighborhoodDAL? _neighborhoodRepository;
         private IPetPhotoDAL? _petPhotoRepository;
@@ -20,6 +26,7 @@ namespace DAL.UnitOfWork
         private ISpecieDAL? _specieRepository;
         private IStateDAL? _stateRepository;
         private IUserDAL? _userRepository;
+        private IVaccineDAL? _vaccineRepository;
         private bool _disposed = false;
 
         public UnitOfWork(DataBaseDbContext context, ILoggerFactory loggerFactory)
@@ -64,6 +71,84 @@ namespace DAL.UnitOfWork
                     _cityRepository = new CityDALImpl(_dbContext, logger);
                 }
                 return _cityRepository;
+            }
+        }
+
+        public IDiagnosisDAL DiagnosisRepository
+        {
+            get
+            {
+                if (_diagnosisRepository == null)
+                {
+                    var logger = _loggerFactory.CreateLogger<DiagnosisDALImpl>();
+                    _diagnosisRepository = new DiagnosisDALImpl(_dbContext, logger);
+                }
+                return _diagnosisRepository;
+            }
+        }
+
+        public IDocumentAttachmentDAL DocumentAttachmentRepository
+        {
+            get
+            {
+                if (_documentAttachmentRepository == null)
+                {
+                    var logger = _loggerFactory.CreateLogger<DocumentAttachmentDALImpl>();
+                    _documentAttachmentRepository = new DocumentAttachmentDALImpl(_dbContext, logger);
+                }
+                return _documentAttachmentRepository;
+            }
+        }
+
+        public IDocumentDAL DocumentRepository
+        {
+            get
+            {
+                if (_documentRepository == null)
+                {
+                    var logger = _loggerFactory.CreateLogger<DocumentDALImpl>();
+                    _documentRepository = new DocumentDALImpl(_dbContext, logger);
+                }
+                return _documentRepository;
+            }
+        }
+
+        public IExamDAL ExamRepository
+        {
+            get
+            {
+                if (_examRepository == null)
+                {
+                    var logger = _loggerFactory.CreateLogger<ExamDALImpl>();
+                    _examRepository = new ExamDALImpl(_dbContext, logger);
+                }
+                return _examRepository;
+            }
+        }
+
+        public IMedicalAttachmentDAL MedicalAttachmentRepository
+        {
+            get
+            {
+                if (_medicalAttachmentRepository == null)
+                {
+                    var logger = _loggerFactory.CreateLogger<MedicalAttachmentDALImpl>();
+                    _medicalAttachmentRepository = new MedicalAttachmentDALImpl(_dbContext, logger);
+                }
+                return _medicalAttachmentRepository;
+            }
+        }
+
+        public IMedicalEventDAL MedicalEventRepository
+        {
+            get
+            {
+                if (_medicalEventRepository == null)
+                {
+                    var logger = _loggerFactory.CreateLogger<MedicalEventDALImpl>();
+                    _medicalEventRepository = new MedicalEventDALImpl(_dbContext, logger);
+                }
+                return _medicalEventRepository;
             }
         }
 
@@ -155,6 +240,19 @@ namespace DAL.UnitOfWork
                     _userRepository = new UserDALImpl(_dbContext, logger);
                 }
                 return _userRepository;
+            }
+        }
+
+        public IVaccineDAL VaccineRepository
+        {
+            get
+            {
+                if (_vaccineRepository == null)
+                {
+                    var logger = _loggerFactory.CreateLogger<VaccineDALImpl>();
+                    _vaccineRepository = new VaccineDALImpl(_dbContext, logger);
+                }
+                return _vaccineRepository;
             }
         }
 
