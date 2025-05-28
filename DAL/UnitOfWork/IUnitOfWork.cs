@@ -8,11 +8,20 @@ namespace DAL.UnitOfWork
         IAddressDAL AddressRepository { get; }
         IBreedDAL BreedRepository { get; }
         ICityDAL CityRepository { get; }
+        IDiagnosisDAL DiagnosisRepository { get; }
+        IDocumentAttachmentDAL DocumentAttachmentRepository { get; }
+        IDocumentDAL DocumentRepository { get; }
+        IExamDAL ExamRepository { get; }
+        IMedicalAttachmentDAL MedicalAttachmentRepository { get; }
+        IMedicalEventDAL MedicalEventRepository { get; }
+        IMedicationDAL MedicationRepository { get; }
         INeighborhoodDAL NeighborhoodRepository { get; }
+        IPetDAL PetRepository { get; }
+        IPetPhotoDAL PetPhotoRepository { get; }
         ISpecieDAL SpecieRepository { get; }
         IStateDAL StateRepository { get; }
         IUserDAL UserRepository { get; }
-        IPetDAL PetRepository { get; }
+        IVaccineDAL VaccineRepository { get; }
 
         Task<Response> Commit();
 

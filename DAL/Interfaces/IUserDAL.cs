@@ -9,6 +9,7 @@ namespace DAL.Interfaces
         Task<DataResponse<User>> Get(int skip, int take, bool? active = null);
 
         Task<int> CountAllByAddressId(Guid addressId);
+
         Task<SingleResponse<User>> GetByEmail(string email);
     }
 }

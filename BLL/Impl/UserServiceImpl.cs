@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using BLL.Interfaces;
+﻿using BLL.Interfaces;
 using BLL.Validation;
 using Commons.Extensions;
 using Commons.Interfaces;
@@ -44,7 +43,6 @@ namespace BLL.Impl
             var validationResult = validator.Validate(item);
             if (!validationResult.IsValid)
                 return validationResult.ToResponse();
-
 
             item.PhoneNumber = item.PhoneNumber.StringCleaner();
             item.Password = await _hashService.HashPasswordAsync(item.Password);

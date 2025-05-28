@@ -1,3 +1,6 @@
+using BLL.Impl;
+using BLL.Validation;
+using DAL.Impl;
 using System.Reflection;
 
 namespace WebApi.Extensions
@@ -8,45 +11,62 @@ namespace WebApi.Extensions
         {
             var assemblyMarkers = new[]
             {
-                typeof(BLL.Impl.AddressServiceImpl),
-                typeof(DAL.Impl.AddressDALImpl),
-                typeof(BLL.Impl.BreedServiceImpl),
-                typeof(DAL.Impl.BreedDALImpl),
-                typeof(BLL.Impl.CityServiceImpl),
-                typeof(DAL.Impl.CityDALImpl),
-                typeof(BLL.Impl.HashServiceImpl),
-                typeof(BLL.Impl.NeighborhoodServiceImpl),
-                typeof(DAL.Impl.NeighborhoodDALImpl),
-                typeof(BLL.Impl.PetServiceImpl),
-                typeof(DAL.Impl.PetDALImpl),
-                typeof(BLL.Impl.SpecieServiceImpl),
-                typeof(DAL.Impl.SpecieDALImpl),
-                typeof(BLL.Impl.StateServiceImpl),
-                typeof(DAL.Impl.StateDALImpl),
-                typeof(BLL.Impl.UserServiceImpl),
-                typeof(DAL.Impl.UserDALImpl),
+                typeof(AddressServiceImpl),
+                typeof(AddressDALImpl),
+                typeof(BreedServiceImpl),
+                typeof(BreedDALImpl),
+                typeof(CityServiceImpl),
+                typeof(CityDALImpl),
+                typeof( HashServiceImpl),
+                typeof(NeighborhoodServiceImpl),
+                typeof(NeighborhoodDALImpl),
+                typeof(PetServiceImpl),
+                typeof(PetDALImpl),
+                typeof(SpecieServiceImpl),
+                typeof(SpecieDALImpl),
+                typeof(StateServiceImpl),
+                typeof(StateDALImpl),
+                typeof(UserServiceImpl),
+                typeof(UserDALImpl),
+
+                typeof(AddressValidator),
+                typeof(BreedValidator),
+                typeof(CityValidator),
+                typeof(ExamValidator),
+                typeof(FileValidator),
+                typeof(MedicalAttachmentValidator),
+                typeof(MedicalEventValidator),
+                typeof(MedicationValidator),
+                typeof(NeighborhoodValidator),
+                typeof(PetPhotoValidator),
+                typeof(PetValidator),
+                typeof(SpecieValidator),
+                typeof(UserValidator),
+                typeof(VaccineValidator),
             };
 
-            // Register validators from all assemblies
             foreach (var marker in assemblyMarkers)
             {
                 var assembly = Assembly.GetAssembly(marker);
                 if (assembly == null) continue;
 
-                var validatorTypes = assembly.GetTypes()
-                    .Where(t => t.IsClass && !t.IsAbstract)
-                    .Where(t => t.Name.EndsWith("Validator"));
-
-                foreach (var validatorType in validatorTypes)
-                {
-                    services.AddScoped(validatorType);
-                }
-
-                // Register other services
+                RegisterValidators(services, assembly);
                 RegisterServicesFromAssembly(services, assembly);
             }
 
             return services;
+        }
+
+        private static void RegisterValidators(IServiceCollection services, Assembly assembly)
+        {
+            var validatorTypes = assembly.GetTypes()
+                .Where(t => t.IsClass && !t.IsAbstract)
+                .Where(t => t.Name.EndsWith("Validator"));
+
+            foreach (var validatorType in validatorTypes)
+            {
+                services.AddScoped(validatorType);
+            }
         }
 
         private static void RegisterServicesFromAssembly(IServiceCollection services, Assembly assembly)
