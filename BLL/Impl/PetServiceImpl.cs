@@ -10,14 +10,16 @@ namespace BLL.Impl
     public class PetServiceImpl : IPetService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserService _userService;
         private readonly PetValidator petValidator;
         private readonly UserValidator userValidator;
 
-        public PetServiceImpl(IUnitOfWork unitOfWork)
+        public PetServiceImpl(IUnitOfWork unitOfWork, IUserService userService, PetValidator petValidator, UserValidator userValidator)
         {
-            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-            petValidator = new PetValidator();
-            userValidator = new UserValidator();
+            _unitOfWork = unitOfWork;
+            _userService = userService;
+            this.petValidator = petValidator;
+            this.userValidator = userValidator;
         }
 
         public async Task<Response> Delete(Guid id)
@@ -72,7 +74,7 @@ namespace BLL.Impl
             }
 
             // Insert owner into the database
-            var ownerResponse = await _unitOfWork.UserRepository.Insert(request.Owner);
+            var ownerResponse = await _userService.Insert(request.Owner);
             if ((bool)!ownerResponse.Success)
             {
                 return ownerResponse;
