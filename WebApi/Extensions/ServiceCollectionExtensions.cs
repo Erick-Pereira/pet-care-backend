@@ -23,21 +23,20 @@ namespace WebApi.Extensions
                 typeof(DocumentAttachmentServiceImpl),
                 typeof(DocumentDALImpl),
                 typeof(DocumentServiceImpl),
-                typeof(ExamServiceImpl),
                 typeof(ExamDALImpl),
-                typeof(MedicalAttachmentServiceImpl),
-                typeof(MedicalAttachmentDALImpl),
-                typeof(MedicalEventServiceImpl),
-                typeof(MedicalEventDALImpl),
-                typeof(MedicationServiceImpl),
-                typeof(MedicationDALImpl),
-                typeof(PetPhotoServiceImpl),
-                typeof(PetPhotoDALImpl),
-                typeof(DiagnosisServiceImpl),
+                typeof(ExamServiceImpl),
                 typeof(HashServiceImpl),
+                typeof(MedicalAttachmentDALImpl),
+                typeof(MedicalAttachmentServiceImpl),
+                typeof(MedicalEventDALImpl),
+                typeof(MedicalEventServiceImpl),
+                typeof(MedicationDALImpl),
+                typeof(MedicationServiceImpl),
                 typeof(NeighborhoodDALImpl),
                 typeof(NeighborhoodServiceImpl),
                 typeof(PetDALImpl),
+                typeof(PetPhotoDALImpl),
+                typeof(PetPhotoServiceImpl),
                 typeof(PetServiceImpl),
                 typeof(SpecieDALImpl),
                 typeof(SpecieServiceImpl),
@@ -77,6 +76,18 @@ namespace WebApi.Extensions
             }
 
             return services;
+        }
+
+        private static void RegisterValidators(IServiceCollection services, Assembly assembly)
+        {
+            var validatorTypes = assembly.GetTypes()
+                .Where(t => t.IsClass && !t.IsAbstract)
+                .Where(t => t.Name.EndsWith("Validator"));
+
+            foreach (var validatorType in validatorTypes)
+            {
+                services.AddScoped(validatorType);
+            }
         }
 
         private static void RegisterServicesFromAssembly(IServiceCollection services, Assembly assembly)

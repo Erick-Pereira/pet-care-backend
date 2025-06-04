@@ -9,7 +9,6 @@ namespace WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class PetController : ControllerBase, IController<Pet>
     {
         private readonly IPetService _petService;
