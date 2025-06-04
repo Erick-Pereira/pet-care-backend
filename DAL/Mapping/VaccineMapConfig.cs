@@ -15,7 +15,6 @@ namespace DAL.Mapping
                 .HasMaxLength(100);
 
             builder.Property(v => v.Batch)
-                .IsRequired()
                 .HasMaxLength(50);
 
             builder.HasOne(v => v.MedicalEvent)

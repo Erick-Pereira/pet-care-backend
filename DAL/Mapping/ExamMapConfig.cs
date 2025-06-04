@@ -20,6 +20,10 @@ namespace DAL.Mapping
             builder.Property(e => e.Notes)
                 .HasMaxLength(1000);
 
+            builder.Property(e => e.ExamDate)
+                .HasColumnType("date")
+                .IsRequired();
+
             builder.HasOne(e => e.MedicalEvent)
                 .WithMany()
                 .HasForeignKey(e => e.MedicalEventId)
