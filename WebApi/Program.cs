@@ -10,14 +10,13 @@ using System.Text;
 using web_api.Services;
 using WebApi.Extensions;
 
-// Load .env file with absolute path
-var envPath = Path.Combine(Directory.GetCurrentDirectory(), "..", ".env");
-if (!File.Exists(envPath))
+#if DEBUG
+var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
+if (File.Exists(envPath))
 {
-    throw new FileNotFoundException($".env file not found at {envPath}");
+    DotNetEnv.Env.Load(envPath);
 }
-
-DotNetEnv.Env.Load(envPath);
+#endif
 
 var builder = WebApplication.CreateBuilder(args);
 
