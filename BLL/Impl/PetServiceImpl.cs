@@ -14,12 +14,13 @@ namespace BLL.Impl
         private readonly PetValidator petValidator;
         private readonly UserValidator userValidator;
 
-        public PetServiceImpl(IUnitOfWork unitOfWork, IUserService userService, PetValidator petValidator, UserValidator userValidator)
+        public PetServiceImpl(IUnitOfWork unitOfWork, IUserService userService)
         {
             _unitOfWork = unitOfWork;
             _userService = userService;
-            this.petValidator = petValidator;
-            this.userValidator = userValidator;
+            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            petValidator = new PetValidator();
+            userValidator = new UserValidator();
         }
 
         public async Task<Response> Delete(Guid id)
