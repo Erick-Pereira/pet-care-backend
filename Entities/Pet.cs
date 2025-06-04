@@ -18,9 +18,7 @@ namespace Entities
         public string ChipNumber { get; set; }
         public Guid OwnerId { get; set; }
         public User Owner { get; set; }
-
         public byte[]? ProfilePhoto { get; set; }
-
         public ICollection<PetPhoto> Photos { get; set; } = new List<PetPhoto>();
     }
 }

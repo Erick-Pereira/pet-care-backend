@@ -11,27 +11,48 @@ namespace WebApi.Extensions
         {
             var assemblyMarkers = new[]
             {
-                typeof(AddressServiceImpl),
                 typeof(AddressDALImpl),
-                typeof(BreedServiceImpl),
+                typeof(AddressServiceImpl),
                 typeof(BreedDALImpl),
-                typeof(CityServiceImpl),
+                typeof(BreedServiceImpl),
                 typeof(CityDALImpl),
-                typeof( HashServiceImpl),
-                typeof(NeighborhoodServiceImpl),
+                typeof(CityServiceImpl),
+                typeof(DiagnosisDALImpl),
+                typeof(DiagnosisServiceImpl),
+                typeof(DocumentAttachmentDALImpl),
+                typeof(DocumentAttachmentServiceImpl),
+                typeof(DocumentDALImpl),
+                typeof(DocumentServiceImpl),
+                typeof(ExamDALImpl),
+                typeof(ExamServiceImpl),
+                typeof(HashServiceImpl),
+                typeof(MedicalAttachmentDALImpl),
+                typeof(MedicalAttachmentServiceImpl),
+                typeof(MedicalEventDALImpl),
+                typeof(MedicalEventServiceImpl),
+                typeof(MedicationDALImpl),
+                typeof(MedicationServiceImpl),
                 typeof(NeighborhoodDALImpl),
-                typeof(PetServiceImpl),
+                typeof(NeighborhoodServiceImpl),
                 typeof(PetDALImpl),
-                typeof(SpecieServiceImpl),
+                typeof(PetPhotoDALImpl),
+                typeof(PetPhotoServiceImpl),
+                typeof(PetServiceImpl),
                 typeof(SpecieDALImpl),
-                typeof(StateServiceImpl),
+                typeof(SpecieServiceImpl),
                 typeof(StateDALImpl),
-                typeof(UserServiceImpl),
+                typeof(StateServiceImpl),
                 typeof(UserDALImpl),
+                typeof(UserServiceImpl),
+                typeof(VaccineDALImpl),
+                typeof(VaccineServiceImpl),
 
                 typeof(AddressValidator),
                 typeof(BreedValidator),
                 typeof(CityValidator),
+                typeof(DiagnosisValidator),
+                typeof(DocumentAttachmentValidator),
+                typeof(DocumentValidator),
                 typeof(ExamValidator),
                 typeof(FileValidator),
                 typeof(MedicalAttachmentValidator),
@@ -57,18 +78,6 @@ namespace WebApi.Extensions
             return services;
         }
 
-        private static void RegisterValidators(IServiceCollection services, Assembly assembly)
-        {
-            var validatorTypes = assembly.GetTypes()
-                .Where(t => t.IsClass && !t.IsAbstract)
-                .Where(t => t.Name.EndsWith("Validator"));
-
-            foreach (var validatorType in validatorTypes)
-            {
-                services.AddScoped(validatorType);
-            }
-        }
-
         private static void RegisterServicesFromAssembly(IServiceCollection services, Assembly assembly)
         {
             var serviceTypes = assembly.GetTypes()
@@ -91,6 +100,18 @@ namespace WebApi.Extensions
                 {
                     services.AddScoped(interfaceType, serviceType);
                 }
+            }
+        }
+
+        private static void RegisterValidators(IServiceCollection services, Assembly assembly)
+        {
+            var validatorTypes = assembly.GetTypes()
+                .Where(t => t.IsClass && !t.IsAbstract)
+                .Where(t => t.Name.EndsWith("Validator"));
+
+            foreach (var validatorType in validatorTypes)
+            {
+                services.AddScoped(validatorType);
             }
         }
     }
