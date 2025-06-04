@@ -16,7 +16,6 @@ namespace BLL.Impl
 
         public PetServiceImpl(IUnitOfWork unitOfWork, IUserService userService)
         {
-            _unitOfWork = unitOfWork;
             _userService = userService;
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
             petValidator = new PetValidator();
