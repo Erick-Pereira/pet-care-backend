@@ -1,6 +1,5 @@
 using BLL.Interfaces;
 using Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using web_api.Controllers;
 using web_api.Services;
