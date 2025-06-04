@@ -12,6 +12,6 @@ namespace Entities
         public string? Description { get; set; }
         public string? Notes { get; set; }
 
-        public ICollection<MedicalAttachment> Attachments { get; set; } = new List<MedicalAttachment>();
+        public ICollection<MedicalAttachment>? Attachments { get; set; } = new List<MedicalAttachment>();
     }
 }

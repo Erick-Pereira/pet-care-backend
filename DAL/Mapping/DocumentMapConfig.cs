@@ -23,8 +23,11 @@ namespace DAL.Mapping
             builder.Property(d => d.IssuingAgency)
                 .HasMaxLength(100);
 
+            builder.Property(d => d.IssueDate)
+                .IsRequired();
+
             builder.HasOne(d => d.Pet)
-                .WithMany()
+                .WithMany(p => p.Documents)
                 .HasForeignKey(d => d.PetId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
