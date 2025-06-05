@@ -11,7 +11,7 @@ using web_api.Services;
 using WebApi.Extensions;
 
 #if DEBUG
-var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
+var envPath = Path.Combine(Directory.GetCurrentDirectory(), "..", ".env");
 if (File.Exists(envPath))
 {
     DotNetEnv.Env.Load(envPath);
