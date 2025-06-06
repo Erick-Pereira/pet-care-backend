@@ -87,18 +87,34 @@ namespace BLL.Impl
             {
                 var neghboorhoodResponse = await _neighborhoodService.Get(addressResponse.Item.NeighborhoodId);
 
-                if (address.Neighborhood.Name.ToLower() == neghboorhoodResponse.Item.Name.ToLower())
+                if (address.Neighborhood != null &&
+                    !string.IsNullOrEmpty(address.Neighborhood.Name) &&
+                    neghboorhoodResponse.Item != null &&
+                    !string.IsNullOrEmpty(neghboorhoodResponse.Item.Name) &&
+                    address.Neighborhood.Name.Equals(neghboorhoodResponse.Item.Name, StringComparison.OrdinalIgnoreCase))
                 {
                     return addressResponse;
                 }
             }
 
+            if (address.Neighborhood == null)
+            {
+                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Address>("Neighborhood is null.");
+            }
+
             var neighborhoodResponse = await _neighborhoodService.FindOrCreateNew(address.Neighborhood);
             if (!neighborhoodResponse.Success == true || neighborhoodResponse.Item == null)
-                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Address>(neighborhoodResponse.Message);
+                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Address>(neighborhoodResponse.Message ?? "Neighborhood response message is null.");
 
             address.Neighborhood = neighborhoodResponse.Item;
-            address.NeighborhoodId = neighborhoodResponse.Item.Id;
+            if (neighborhoodResponse.Item.Id.HasValue)
+            {
+                address.NeighborhoodId = neighborhoodResponse.Item.Id.Value;
+            }
+            else
+            {
+                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Address>("Neighborhood Id is null.");
+            }
             return await _unitOfWork.AddressRepository.InsertReturnObject(address);
         }
 
@@ -106,7 +122,9 @@ namespace BLL.Impl
         {
             var addressResult = await _unitOfWork.AddressRepository.FindByAddress(address);
 
-            int usersUsingOldAddress = await _unitOfWork.UserRepository.CountAllByAddressId(address.Id);
+            int usersUsingOldAddress = address.Id.HasValue
+                ? await _unitOfWork.UserRepository.CountAllByAddressId(address.Id.Value)
+                : 0;
 
             if (usersUsingOldAddress == 1)
             {
@@ -114,16 +132,32 @@ namespace BLL.Impl
                 {
                     var neghboorhoodResponse = await _neighborhoodService.Get(addressResult.Item.NeighborhoodId);
 
-                    if (address.Neighborhood.Name.ToLower() == neghboorhoodResponse.Item.Name.ToLower())
+                    if (address.Neighborhood != null &&
+                        !string.IsNullOrEmpty(address.Neighborhood.Name) &&
+                        neghboorhoodResponse.Item != null &&
+                        !string.IsNullOrEmpty(neghboorhoodResponse.Item.Name) &&
+                        address.Neighborhood.Name.Equals(neghboorhoodResponse.Item.Name, StringComparison.CurrentCultureIgnoreCase))
                     {
-                        await _unitOfWork.AddressRepository.Delete(address.Id);
+                        if (address.Id.HasValue)
+                        {
+                            await _unitOfWork.AddressRepository.Delete(address.Id.Value);
+                        }
+                        else
+                        {
+                            return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Address>("Address Id is null.");
+                        }
                         return addressResult;
                     }
                 }
 
+                if (address.Neighborhood == null)
+                {
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Address>("Neighborhood is null.");
+                }
+
                 var neighborhoodResponse = await _neighborhoodService.FindOrCreateOrSwitch(address.Neighborhood);
                 if (!neighborhoodResponse.Success == true || neighborhoodResponse.Item == null)
-                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Address>(neighborhoodResponse.Message);
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Address>(neighborhoodResponse.Message ?? "Neighborhood response message is null.");
 
                 address.Neighborhood = neighborhoodResponse.Item;
                 return await _unitOfWork.AddressRepository.UpdateReturnObject(address);
@@ -134,15 +168,24 @@ namespace BLL.Impl
                 {
                     var neghboorhoodResponse = await _neighborhoodService.Get(addressResult.Item.NeighborhoodId);
 
-                    if (address.Neighborhood.Name.ToLower() == neghboorhoodResponse.Item.Name.ToLower())
+                    if (address.Neighborhood != null &&
+                        !string.IsNullOrEmpty(address.Neighborhood.Name) &&
+                        neghboorhoodResponse.Item != null &&
+                        !string.IsNullOrEmpty(neghboorhoodResponse.Item.Name) &&
+                        address.Neighborhood.Name.Equals(neghboorhoodResponse.Item.Name, StringComparison.CurrentCultureIgnoreCase))
                     {
                         return addressResult;
                     }
                 }
 
+                if (address.Neighborhood == null)
+                {
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Address>("Neighborhood is null.");
+                }
+
                 var neighborhoodResponse = await _neighborhoodService.FindOrCreateOrSwitch(address.Neighborhood);
                 if (!neighborhoodResponse.Success == true || neighborhoodResponse.Item == null)
-                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Address>(neighborhoodResponse.Message);
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Address>(neighborhoodResponse.Message ?? "Neighborhood response message is null.");
 
                 address.Neighborhood = neighborhoodResponse.Item;
                 return await _unitOfWork.AddressRepository.InsertReturnObject(address);

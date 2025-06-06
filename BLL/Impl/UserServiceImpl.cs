@@ -50,7 +50,10 @@ namespace BLL.Impl
             var addressResponse = await _addressService.FindOrCreateNew(item.Address);
             if (addressResponse.Success == true && addressResponse.Item != null)
             {
-                item.AddressId = addressResponse.Item.Id;
+                if (addressResponse.Item.Id.HasValue)
+                {
+                    item.AddressId = addressResponse.Item.Id.Value;
+                }
                 item.Address = addressResponse.Item;
             }
 
@@ -67,9 +70,9 @@ namespace BLL.Impl
             item.Password = await _hashService.HashPasswordAsync(item.Password);
 
             var addressResponse = await _addressService.FindOrCreateOrSwitch(item.Address);
-            if (!addressResponse.Success.GetValueOrDefault() || addressResponse.Item == null)
+            if (addressResponse.Success.GetValueOrDefault() && addressResponse.Item != null && addressResponse.Item.Id.HasValue)
             {
-                item.AddressId = addressResponse.Item.Id;
+                item.AddressId = addressResponse.Item.Id.Value;
                 item.Address = addressResponse.Item;
             }
 

@@ -8,13 +8,11 @@ namespace DAL.Impl
 {
     public class UserDALImpl : BaseDAL<User>, IUserDAL
     {
-        private readonly ILogger<BaseDAL<User>> _logger;
         private readonly DataBaseDbContext _db;
 
         public UserDALImpl(DataBaseDbContext dbContext, ILogger<BaseDAL<User>> logger) : base(dbContext, logger)
         {
             _db = dbContext;
-            _logger = logger;
         }
 
         public async Task<DataResponse<User>> Get(int skip, int take, bool? active = null)

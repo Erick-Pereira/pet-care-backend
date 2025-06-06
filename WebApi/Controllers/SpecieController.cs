@@ -30,7 +30,7 @@ namespace web_api.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Success = false, Message = "Internal server error" });
+                return StatusCode(500, new { Success = false, Message = ex.Message, ex });
             }
         }
 

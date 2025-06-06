@@ -75,16 +75,24 @@ namespace BLL.Impl
 
             // Insert owner into the database
             var ownerResponse = await _userService.Insert(request.Owner);
-            if ((bool)!ownerResponse.Success)
+            if (!ownerResponse.Success.HasValue || !ownerResponse.Success.Value)
             {
                 return ownerResponse;
             }
 
-            request.OwnerId = request.Owner.Id;
+            if (request.Owner.Id == null)
+            {
+                return ResponseFactory.CreateFailedResponse("Owner ID is null.");
+            }
+            request.OwnerId = (Guid)request.Owner.Id;
 
             // Insert pet into the database
             var petResponse = await _unitOfWork.PetRepository.Insert(request);
-            return (bool)!petResponse.Success ? petResponse : ResponseFactory.CreateInstance().CreateSuccessResponse("Pet and owner registered successfully.");
+            if (!petResponse.Success.HasValue || !petResponse.Success.Value)
+            {
+                return petResponse;
+            }
+            return ResponseFactory.CreateInstance().CreateSuccessResponse("Pet and owner registered successfully.");
         }
 
         public async Task<SingleResponse<Pet>> ToggleActive(Guid id)
@@ -99,7 +107,7 @@ namespace BLL.Impl
                 var updateResponse = await _unitOfWork.PetRepository.Update(entity.Item);
 
                 if (!updateResponse.Success == true)
-                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Pet>(updateResponse.Message);
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Pet>(updateResponse.Message ?? "Failed to update pet status.");
 
                 return ResponseFactory.CreateSuccessSingleResponse(entity.Item);
             }

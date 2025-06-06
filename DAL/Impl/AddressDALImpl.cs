@@ -16,8 +16,8 @@ namespace DAL.Impl
         {
             try
             {
-                var existingAddress = _dbContext.Set<Address>()
-                    .FirstOrDefault(a =>
+                var existingAddress = await _dbContext.Set<Address>()
+                    .FirstOrDefaultAsync(a =>
                         a.Street == address.Street &&
                         a.Number == address.Number);
 
