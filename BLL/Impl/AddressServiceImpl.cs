@@ -107,9 +107,9 @@ namespace BLL.Impl
                 return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Address>(neighborhoodResponse.Message ?? "Neighborhood response message is null.");
 
             address.Neighborhood = neighborhoodResponse.Item;
-            if (neighborhoodResponse.Item.Id.HasValue)
+            if (neighborhoodResponse.Item.Id != null)
             {
-                address.NeighborhoodId = neighborhoodResponse.Item.Id.Value;
+                address.NeighborhoodId = neighborhoodResponse.Item.Id;
             }
             else
             {
@@ -122,8 +122,8 @@ namespace BLL.Impl
         {
             var addressResult = await _unitOfWork.AddressRepository.FindByAddress(address);
 
-            int usersUsingOldAddress = address.Id.HasValue
-                ? await _unitOfWork.UserRepository.CountAllByAddressId(address.Id.Value)
+            int usersUsingOldAddress = address.Id != null
+                ? await _unitOfWork.UserRepository.CountAllByAddressId(address.Id)
                 : 0;
 
             if (usersUsingOldAddress == 1)
@@ -138,9 +138,9 @@ namespace BLL.Impl
                         !string.IsNullOrEmpty(neghboorhoodResponse.Item.Name) &&
                         address.Neighborhood.Name.Equals(neghboorhoodResponse.Item.Name, StringComparison.CurrentCultureIgnoreCase))
                     {
-                        if (address.Id.HasValue)
+                        if (address.Id != null)
                         {
-                            await _unitOfWork.AddressRepository.Delete(address.Id.Value);
+                            await _unitOfWork.AddressRepository.Delete(address.Id);
                         }
                         else
                         {

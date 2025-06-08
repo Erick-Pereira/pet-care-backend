@@ -1,7 +1,9 @@
+using AutoMapper;
 using BLL.Interfaces;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using web_api.Controllers;
+using web_api.Models;
 using web_api.Services;
 
 namespace WebApi.Controllers
@@ -11,9 +13,11 @@ namespace WebApi.Controllers
     public class PetController : ControllerBase, IController<Pet>
     {
         private readonly IPetService _petService;
+        private readonly IMapper _mapper;
 
-        public PetController(IPetService petService)
+        public PetController(IPetService petService, IMapper mapper)
         {
+            _mapper = mapper;
             _petService = petService ?? throw new ArgumentNullException(nameof(petService));
         }
 
@@ -122,11 +126,12 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterPet([FromBody] Pet request)
+        public async Task<IActionResult> RegisterPet([FromBody] PetRegistrationDTO request)
         {
             try
             {
-                var response = await _petService.RegisterPetWithOwner(request);
+                Pet pet = _mapper.Map < Pet > request(request);
+                var response = await _petService.RegisterPetWithOwner(pet);
                 return response.Success == true
                     ? Ok(new { response.Success, response.Message })
                     : BadRequest(new { response.Success, response.Message });

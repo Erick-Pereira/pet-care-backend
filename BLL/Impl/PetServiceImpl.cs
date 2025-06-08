@@ -11,11 +11,13 @@ namespace BLL.Impl
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserService _userService;
+        private readonly IBreedService _breedService;
         private readonly PetValidator petValidator;
         private readonly UserValidator userValidator;
 
-        public PetServiceImpl(IUnitOfWork unitOfWork, IUserService userService)
+        public PetServiceImpl(IUnitOfWork unitOfWork, IUserService userService, IBreedService breedService)
         {
+            _breedService = breedService;
             _userService = userService;
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
             petValidator = new PetValidator();
@@ -61,6 +63,15 @@ namespace BLL.Impl
 
         public async Task<Response> RegisterPetWithOwner(Pet request)
         {
+            if (request.Breed == null && (request.BreedId != default || request.BreedId != Guid.Empty))
+            {
+                var breedResponse = await _breedService.Get(request.BreedId);
+                if (!breedResponse.Success.HasValue || !breedResponse.Success.Value)
+                {
+                    request.Breed = breedResponse.Item;
+                }
+            }
+
             var petValidationResult = petValidator.Validate(request);
             if (!petValidationResult.IsValid)
             {
@@ -73,7 +84,6 @@ namespace BLL.Impl
                 return petValidationResult.ToResponse();
             }
 
-            // Insert owner into the database
             var ownerResponse = await _userService.Insert(request.Owner);
             if (!ownerResponse.Success.HasValue || !ownerResponse.Success.Value)
             {
@@ -84,9 +94,8 @@ namespace BLL.Impl
             {
                 return ResponseFactory.CreateFailedResponse("Owner ID is null.");
             }
-            request.OwnerId = (Guid)request.Owner.Id;
+            request.OwnerId = request.Owner.Id;
 
-            // Insert pet into the database
             var petResponse = await _unitOfWork.PetRepository.Insert(request);
             if (!petResponse.Success.HasValue || !petResponse.Success.Value)
             {
