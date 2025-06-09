@@ -14,7 +14,7 @@ namespace BLL.Validation
                 .MinimumLength(PetConstants.NameMinLength).WithMessage(ValidationMessages.PetNameMinLength)
                 .MaximumLength(PetConstants.NameMaxLength).WithMessage(ValidationMessages.PetNameMaxLength);
 
-            RuleFor(pet => pet.Specie)
+            RuleFor(pet => pet.SpecieId)
                 .NotNull().WithMessage(ValidationMessages.SpecieRequired);
 
             RuleFor(pet => pet.Gender)

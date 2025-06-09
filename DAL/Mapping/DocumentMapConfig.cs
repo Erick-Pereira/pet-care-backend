@@ -17,15 +17,6 @@ namespace DAL.Mapping
             builder.Property(d => d.Description)
                 .HasMaxLength(500);
 
-            builder.Property(d => d.DocumentNumber)
-                .HasMaxLength(50);
-
-            builder.Property(d => d.IssuingAgency)
-                .HasMaxLength(100);
-
-            builder.Property(d => d.IssueDate)
-                .IsRequired();
-
             builder.HasOne(d => d.Pet)
                 .WithMany(p => p.Documents)
                 .HasForeignKey(d => d.PetId)

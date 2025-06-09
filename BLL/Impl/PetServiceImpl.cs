@@ -12,12 +12,14 @@ namespace BLL.Impl
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserService _userService;
         private readonly IBreedService _breedService;
+        private readonly ISpecieService _specieService;
         private readonly PetValidator petValidator;
         private readonly UserValidator userValidator;
 
-        public PetServiceImpl(IUnitOfWork unitOfWork, IUserService userService, IBreedService breedService)
+        public PetServiceImpl(IUnitOfWork unitOfWork, IUserService userService, IBreedService breedService, ISpecieService specieService)
         {
             _breedService = breedService;
+            _specieService = specieService;
             _userService = userService;
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
             petValidator = new PetValidator();
@@ -63,14 +65,23 @@ namespace BLL.Impl
 
         public async Task<Response> RegisterPetWithOwner(Pet request)
         {
-            if (request.Breed == null && (request.BreedId != default || request.BreedId != Guid.Empty))
-            {
-                var breedResponse = await _breedService.Get(request.BreedId);
-                if (!breedResponse.Success.HasValue || !breedResponse.Success.Value)
-                {
-                    request.Breed = breedResponse.Item;
-                }
-            }
+            //if (request.Breed == null && (request.BreedId != default || request.BreedId != Guid.Empty))
+            //{
+            //    var breedResponse = await _breedService.Get(request.BreedId);
+            //    if (breedResponse.Success.HasValue || breedResponse.Success.Value)
+            //    {
+            //        request.Breed = breedResponse.Item;
+            //    }
+            //}
+
+            //if (request.Specie == null && (request.SpecieId != default || request.SpecieId != Guid.Empty))
+            //{
+            //    var specieResponse = await _specieService.Get(request.SpecieId);
+            //    if (specieResponse.Success.HasValue || specieResponse.Success.Value)
+            //    {
+            //        request.Specie = specieResponse.Item;
+            //    }
+            //}
 
             var petValidationResult = petValidator.Validate(request);
             if (!petValidationResult.IsValid)

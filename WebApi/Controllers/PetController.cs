@@ -4,6 +4,7 @@ using Entities;
 using Microsoft.AspNetCore.Mvc;
 using web_api.Controllers;
 using web_api.Models;
+using web_api.Models.Pet;
 using web_api.Services;
 
 namespace WebApi.Controllers
@@ -130,15 +131,15 @@ namespace WebApi.Controllers
         {
             try
             {
-                Pet pet = _mapper.Map < Pet > request(request);
+                Pet pet = _mapper.Map<Pet>(request);
                 var response = await _petService.RegisterPetWithOwner(pet);
                 return response.Success == true
                     ? Ok(new { response.Success, response.Message })
                     : BadRequest(new { response.Success, response.Message });
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return StatusCode(500, new { Success = false, Message = "Internal server error" });
+                return StatusCode(500, new { Success = false, Message = "Internal server error", e });
             }
         }
     }

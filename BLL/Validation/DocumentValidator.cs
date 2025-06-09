@@ -27,14 +27,6 @@ namespace BLL.Validation
                 .WithMessage("A data de expiração deve ser posterior à data de emissão")
                 .When(d => d.ExpirationDate.HasValue);
 
-            RuleFor(d => d.DocumentNumber)
-                .MaximumLength(50)
-                .WithMessage("O número do documento deve ter no máximo 50 caracteres");
-
-            RuleFor(d => d.IssuingAgency)
-                .MaximumLength(100)
-                .WithMessage("O nome do órgão emissor deve ter no máximo 100 caracteres");
-
             RuleFor(d => d.PetId)
                 .NotEmpty()
                 .WithMessage("O ID do pet é obrigatório");
