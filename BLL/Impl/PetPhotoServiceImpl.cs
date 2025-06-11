@@ -11,13 +11,13 @@ namespace BLL.Impl
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly PetPhotoValidator _validator;
-        private readonly FileValidator _fileValidator;
+        private readonly FileValidator fileValidator;
 
         public PetPhotoServiceImpl(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
             _validator = new PetPhotoValidator();
-            _fileValidator = new FileValidator(true);
+            fileValidator = new FileValidator(true);
         }
 
         public async Task<Response> Delete(Guid id)

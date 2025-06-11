@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text;
 using web_api.Services;
 using WebApi.Extensions;
@@ -46,6 +47,8 @@ connectionString.Append("Maximum Pool Size=100;");
 
 // Add debug logging
 Console.WriteLine($"Connection string: {connectionString}");
+
+builder.Services.AddAutoMapper(cfg => cfg.AddMaps(Assembly.GetExecutingAssembly()));
 
 builder.Services.AddDbContext<DataBaseDbContext>(options =>
     options.UseNpgsql(connectionString.ToString()));

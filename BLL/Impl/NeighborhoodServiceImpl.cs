@@ -86,17 +86,26 @@ namespace BLL.Impl
             if (neighborhoodResult.Success == true && neighborhoodResult.Item != null)
             {
                 var cityResult = await _cityService.Get(neighborhoodResult.Item.CityId);
-                if (neighborhood.City.Name.ToLower() == cityResult.Item.Name.ToLower())
+                if (neighborhood.City != null && !string.IsNullOrEmpty(neighborhood.City.Name) &&
+                    cityResult.Item != null && !string.IsNullOrEmpty(cityResult.Item.Name) &&
+                    neighborhood.City.Name.ToLower() == cityResult.Item.Name.ToLower())
                 {
                     return neighborhoodResult;
                 }
             }
 
+            if (neighborhood.City == null)
+            {
+                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Neighborhood>("City cannot be null.");
+            }
+
             var cityResponse = await _cityService.FindOrCreateNew(neighborhood.City);
             if (!cityResponse.Success == true || cityResponse.Item == null)
-                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Neighborhood>(cityResponse.Message);
+                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Neighborhood>(cityResponse.Message ?? "Unknown error.");
 
             neighborhood.City = cityResponse.Item;
+            if (cityResponse.Item.Id == null)
+                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Neighborhood>("City Id is null.");
             neighborhood.CityId = cityResponse.Item.Id;
             return await _unitOfWork.NeighborhoodRepository.InsertReturnObject(neighborhood);
         }
@@ -105,6 +114,9 @@ namespace BLL.Impl
         {
             var neighborhoodResult = await _unitOfWork.NeighborhoodRepository.FindByNeighborhood(neighborhood);
 
+            if (neighborhood.Id == null)
+                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Neighborhood>("Neighborhood Id is null.");
+
             int addressesUsingOldNeighborhood = await _unitOfWork.AddressRepository.CountAllByNeighborhoodId(neighborhood.Id);
 
             if (addressesUsingOldNeighborhood == 1)
@@ -112,19 +124,26 @@ namespace BLL.Impl
                 if (neighborhoodResult.Success == true && neighborhoodResult.Item != null)
                 {
                     var cityResult = await _cityService.Get(neighborhoodResult.Item.CityId);
-                    if (neighborhood.City.Name.ToLower() == cityResult.Item.Name.ToLower())
+                    if (neighborhood.City != null && !string.IsNullOrEmpty(neighborhood.City.Name) &&
+                        cityResult.Item != null && !string.IsNullOrEmpty(cityResult.Item.Name) &&
+                        neighborhood.City.Name.Equals(cityResult.Item.Name, StringComparison.CurrentCultureIgnoreCase))
                     {
                         await _unitOfWork.NeighborhoodRepository.Delete(neighborhood.Id);
                         return neighborhoodResult;
                     }
                 }
 
+                if (neighborhood.City == null)
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Neighborhood>("City cannot be null.");
+
                 var cityResponse = await _cityService.FindOrCreateOrSwitch(neighborhood.City);
                 if (!cityResponse.Success == true || cityResponse.Item == null)
-                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Neighborhood>(cityResponse.Message);
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Neighborhood>(cityResponse.Message ?? "Unknown error.");
 
                 neighborhood.City = cityResponse.Item;
-                neighborhood.CityId = neighborhood.City.Id;
+                if (cityResponse.Item.Id == null)
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Neighborhood>("City Id is null.");
+                neighborhood.CityId = cityResponse.Item.Id;
                 return await _unitOfWork.NeighborhoodRepository.UpdateReturnObject(neighborhood);
             }
             else
@@ -132,17 +151,24 @@ namespace BLL.Impl
                 if (neighborhoodResult.Success == true && neighborhoodResult.Item != null)
                 {
                     var cityResult = await _cityService.Get(neighborhoodResult.Item.CityId);
-                    if (neighborhood.City.Name.ToLower() == cityResult.Item.Name.ToLower())
+                    if (neighborhood.City != null && !string.IsNullOrEmpty(neighborhood.City.Name) &&
+                        cityResult.Item != null && !string.IsNullOrEmpty(cityResult.Item.Name) &&
+                        neighborhood.City.Name.ToLower() == cityResult.Item.Name.ToLower())
                     {
                         return neighborhoodResult;
                     }
                 }
 
+                if (neighborhood.City == null)
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Neighborhood>("City cannot be null.");
+
                 var cityResponse = await _cityService.FindOrCreateOrSwitch(neighborhood.City);
                 if (!cityResponse.Success == true || cityResponse.Item == null)
-                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Neighborhood>(cityResponse.Message);
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Neighborhood>(cityResponse.Message ?? "Unknown error.");
 
                 neighborhood.City = cityResponse.Item;
+                if (neighborhood.City.Id == null)
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Neighborhood>("City Id is null.");
                 neighborhood.CityId = neighborhood.City.Id;
                 return await _unitOfWork.NeighborhoodRepository.InsertReturnObject(neighborhood);
             }

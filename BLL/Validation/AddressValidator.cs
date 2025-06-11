@@ -17,11 +17,11 @@ namespace BLL.Validation
                 .WithMessage(String.Format(ValidationMessages.StreetMaxLength, AddressConstants.StreetMaxLength));
 
             RuleFor(address => address.ZipCode)
-               .NotEmpty().WithMessage(ValidationMessages.ZipCodeEmpty)
-               .Matches(AddressConstants.ZipCodeRegex).WithMessage(ValidationMessages.ZipCodeFormat);
+                .NotEmpty().WithMessage(ValidationMessages.ZipCodeEmpty)
+                .Matches(AddressConstants.ZipCodeRegex).WithMessage(ValidationMessages.ZipCodeFormat);
 
             RuleFor(address => address.Complement)
-               .MaximumLength(AddressConstants.ComplementMaxLength)
+                .MaximumLength(AddressConstants.ComplementMaxLength)
                 .WithMessage(String.Format(ValidationMessages.ComplementMaxLength, AddressConstants.ComplementMaxLength));
 
             RuleFor(address => address.Number)

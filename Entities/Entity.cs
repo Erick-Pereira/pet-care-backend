@@ -2,7 +2,7 @@
 {
     public abstract class Entity
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; }
         public bool Active { get; set; } = true;
         public DateTime? CreatedAt { get; private set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; } = DateTime.UtcNow;

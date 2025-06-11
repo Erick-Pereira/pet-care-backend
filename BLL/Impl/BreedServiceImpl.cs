@@ -70,7 +70,7 @@ namespace BLL.Impl
                 var updateResponse = await _unitOfWork.BreedRepository.Update(entity.Item);
 
                 if (!updateResponse.Success == true)
-                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Breed>(updateResponse.Message);
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Breed>(updateResponse.Message ?? ErrorMessages.ErrorTogglingBreedStatus);
 
                 return ResponseFactory.CreateSuccessSingleResponse(entity.Item);
             }

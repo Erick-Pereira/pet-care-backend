@@ -79,7 +79,7 @@ namespace BLL.Impl
                 var updateResponse = await _unitOfWork.StateRepository.Update(entity.Item);
 
                 if (!updateResponse.Success == true)
-                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<State>(updateResponse.Message);
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<State>(updateResponse.Message ?? "Unknown error occurred while updating the state.");
 
                 return ResponseFactory.CreateSuccessSingleResponse(entity.Item);
             }

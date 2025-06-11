@@ -11,11 +11,15 @@ namespace BLL.Impl
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserService _userService;
+        private readonly IBreedService _breedService;
+        private readonly ISpecieService _specieService;
         private readonly PetValidator petValidator;
         private readonly UserValidator userValidator;
 
-        public PetServiceImpl(IUnitOfWork unitOfWork, IUserService userService)
+        public PetServiceImpl(IUnitOfWork unitOfWork, IUserService userService, IBreedService breedService, ISpecieService specieService)
         {
+            _breedService = breedService;
+            _specieService = specieService;
             _userService = userService;
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
             petValidator = new PetValidator();
@@ -61,6 +65,24 @@ namespace BLL.Impl
 
         public async Task<Response> RegisterPetWithOwner(Pet request)
         {
+            //if (request.Breed == null && (request.BreedId != default || request.BreedId != Guid.Empty))
+            //{
+            //    var breedResponse = await _breedService.Get(request.BreedId);
+            //    if (breedResponse.Success.HasValue || breedResponse.Success.Value)
+            //    {
+            //        request.Breed = breedResponse.Item;
+            //    }
+            //}
+
+            //if (request.Specie == null && (request.SpecieId != default || request.SpecieId != Guid.Empty))
+            //{
+            //    var specieResponse = await _specieService.Get(request.SpecieId);
+            //    if (specieResponse.Success.HasValue || specieResponse.Success.Value)
+            //    {
+            //        request.Specie = specieResponse.Item;
+            //    }
+            //}
+
             var petValidationResult = petValidator.Validate(request);
             if (!petValidationResult.IsValid)
             {
@@ -73,18 +95,24 @@ namespace BLL.Impl
                 return petValidationResult.ToResponse();
             }
 
-            // Insert owner into the database
             var ownerResponse = await _userService.Insert(request.Owner);
-            if ((bool)!ownerResponse.Success)
+            if (!ownerResponse.Success.HasValue || !ownerResponse.Success.Value)
             {
                 return ownerResponse;
             }
 
+            if (request.Owner.Id == null)
+            {
+                return ResponseFactory.CreateFailedResponse("Owner ID is null.");
+            }
             request.OwnerId = request.Owner.Id;
 
-            // Insert pet into the database
             var petResponse = await _unitOfWork.PetRepository.Insert(request);
-            return (bool)!petResponse.Success ? petResponse : ResponseFactory.CreateInstance().CreateSuccessResponse("Pet and owner registered successfully.");
+            if (!petResponse.Success.HasValue || !petResponse.Success.Value)
+            {
+                return petResponse;
+            }
+            return ResponseFactory.CreateInstance().CreateSuccessResponse("Pet and owner registered successfully.");
         }
 
         public async Task<SingleResponse<Pet>> ToggleActive(Guid id)
@@ -99,7 +127,7 @@ namespace BLL.Impl
                 var updateResponse = await _unitOfWork.PetRepository.Update(entity.Item);
 
                 if (!updateResponse.Success == true)
-                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Pet>(updateResponse.Message);
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Pet>(updateResponse.Message ?? "Failed to update pet status.");
 
                 return ResponseFactory.CreateSuccessSingleResponse(entity.Item);
             }

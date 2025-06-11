@@ -15,7 +15,7 @@ namespace web_api.Services
         public void OnAuthorization(AuthorizationFilterContext context)
         {
             var user = context.HttpContext.User;
-            if (!user.Identity.IsAuthenticated)
+            if (user.Identity == null || !user.Identity.IsAuthenticated)
             {
                 context.Result = new UnauthorizedResult();
                 return;

@@ -69,7 +69,7 @@ namespace BLL.Impl
                 var updateResponse = await _unitOfWork.SpecieRepository.Update(entity.Item);
 
                 if (!updateResponse.Success == true)
-                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Specie>(updateResponse.Message);
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Specie>(updateResponse.Message ?? "Unknown error occurred while updating species");
 
                 return ResponseFactory.CreateSuccessSingleResponse(entity.Item);
             }

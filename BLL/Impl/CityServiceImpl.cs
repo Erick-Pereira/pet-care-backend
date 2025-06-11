@@ -86,7 +86,7 @@ namespace BLL.Impl
             if (cityResponse.Success == true && cityResponse.Item != null)
             {
                 var stateResult = await _stateService.Get(cityResponse.Item.StateId);
-                if (city.State.Abreviation.ToLower() == stateResult.Item.Abreviation.ToLower())
+                if (stateResult.Item != null && city.State.Abreviation.ToLower() == stateResult.Item.Abreviation.ToLower())
                 {
                     return cityResponse;
                 }
@@ -94,9 +94,11 @@ namespace BLL.Impl
 
             var stateResponse = await _stateService.FindByAbreviation(city.State.Abreviation);
             if (!stateResponse.Success == true || stateResponse.Item == null)
-                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<City>(stateResponse.Message);
+                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<City>(stateResponse.Message ?? "State response message was null.");
 
             city.State = stateResponse.Item;
+            if (stateResponse.Item.Id == null)
+                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<City>("State Id is null.");
             city.StateId = stateResponse.Item.Id;
             return await _unitOfWork.CityRepository.InsertReturnObject(city);
         }
@@ -104,6 +106,9 @@ namespace BLL.Impl
         public async Task<SingleResponse<City>> FindOrCreateOrSwitch(City city)
         {
             var cityResult = await _unitOfWork.CityRepository.FindByName(city);
+
+            if (city.Id == null)
+                return ResponseFactory.CreateInstance().CreateFailedSingleResponse<City>("City Id is null.");
 
             int neighborhoodsUsingOldCity = await _unitOfWork.NeighborhoodRepository.CountAllByCityId(city.Id);
 
@@ -113,7 +118,7 @@ namespace BLL.Impl
                 {
                     var stateResult = await _stateService.Get(cityResult.Item.StateId);
 
-                    if (city.State.Abreviation.ToLower() == stateResult.Item.Abreviation.ToLower())
+                    if (stateResult.Item != null && city.State.Abreviation.ToLower() == stateResult.Item.Abreviation.ToLower())
                     {
                         await _unitOfWork.CityRepository.Delete(city.Id);
                         return cityResult;
@@ -122,9 +127,12 @@ namespace BLL.Impl
 
                 var stateResponse = await _stateService.FindByAbreviation(city.State.Abreviation);
                 if (!stateResponse.Success == true || stateResponse.Item == null)
-                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<City>(stateResponse.Message);
-
+                {
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<City>(stateResponse.Message ?? "State response message was null.");
+                }
                 city.State = stateResponse.Item;
+                if (stateResponse.Item.Id == null)
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<City>("State Id is null.");
                 city.StateId = stateResponse.Item.Id;
                 return await _unitOfWork.CityRepository.UpdateReturnObject(city);
             }
@@ -133,7 +141,7 @@ namespace BLL.Impl
                 if (cityResult.Success == true && cityResult.Item != null)
                 {
                     var stateResult = await _stateService.Get(cityResult.Item.StateId);
-                    if (city.State.Abreviation.ToLower() == stateResult.Item.Abreviation.ToLower())
+                    if (stateResult.Item != null && city.State.Abreviation.Equals(stateResult.Item.Abreviation, StringComparison.CurrentCultureIgnoreCase))
                     {
                         return cityResult;
                     }
@@ -141,9 +149,13 @@ namespace BLL.Impl
 
                 var stateResponse = await _stateService.FindByAbreviation(city.State.Abreviation);
                 if (!stateResponse.Success == true || stateResponse.Item == null)
-                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<City>(stateResponse.Message);
+                {
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<City>(stateResponse.Message ?? "State response message was null.");
+                }
 
                 city.State = stateResponse.Item;
+                if (stateResponse.Item.Id == null)
+                    return ResponseFactory.CreateInstance().CreateFailedSingleResponse<City>("State Id is null.");
                 city.StateId = stateResponse.Item.Id;
                 return await _unitOfWork.CityRepository.InsertReturnObject(city);
             }
