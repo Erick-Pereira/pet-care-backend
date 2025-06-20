@@ -73,5 +73,10 @@ namespace DAL.Impl
                 return ResponseFactory.CreateInstance().CreateFailedSingleResponse<City>("Error finding city", ex);
             }
         }
+
+        protected override IQueryable<City> AddIncludes(IQueryable<City> query)
+        {
+            return query.Include(c => c.State);
+        }
     }
 }

@@ -86,5 +86,10 @@ namespace DAL.Impl
                 return 0;
             }
         }
+
+        protected override IQueryable<Neighborhood> AddIncludes(IQueryable<Neighborhood> query)
+        {
+            return query.Include(n => n.City);
+        }
     }
 }

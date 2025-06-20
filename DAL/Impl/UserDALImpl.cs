@@ -70,5 +70,10 @@ namespace DAL.Impl
                 return ResponseFactory.CreateInstance().CreateFailedSingleResponse<User>("Error retrieving user by email", ex);
             }
         }
+
+        protected override IQueryable<User> AddIncludes(IQueryable<User> query)
+        {
+            return query.Include(u => u.Address);
+        }
     }
 }

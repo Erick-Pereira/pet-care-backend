@@ -13,6 +13,11 @@ namespace DAL.Impl
         {
         }
 
+        protected override IQueryable<PetPhoto> AddIncludes(IQueryable<PetPhoto> query)
+        {
+            return query.Include(p => p.Pet);
+        }
+
         public async Task<DataResponse<PetPhoto>> GetByPetId(Guid petId)
         {
             try
