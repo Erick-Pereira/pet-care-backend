@@ -31,9 +31,6 @@ namespace BLL.Validation
                 .NotEmpty().WithMessage(ValidationMessages.ColorRequired)
                 .MaximumLength(PetConstants.ColorMaxLength).WithMessage(ValidationMessages.ColorMaxLength);
 
-            RuleFor(pet => pet.Acquisition)
-                .NotEmpty().WithMessage(ValidationMessages.AcquisitionRequired);
-
             RuleFor(pet => pet.IsCastrated)
                 .NotNull().WithMessage(ValidationMessages.CastrationRequired);
 

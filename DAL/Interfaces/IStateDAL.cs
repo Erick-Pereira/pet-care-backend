@@ -6,6 +6,6 @@ namespace DAL.Interfaces
 {
     public interface IStateDAL : ICRUD<State>
     {
-        Task<SingleResponse<State>> FindByAbreviation(string name);
+        Task<SingleResponse<State>> FindByAbbreviation(string name);
     }
 }

@@ -5,7 +5,7 @@ namespace Entities
     public class MedicalEvent : Entity
     {
         public Guid PetId { get; set; }
-        public required Pet Pet { get; set; }
+        public Pet Pet { get; set; }
         public MedicalEventType Type { get; set; }
         public DateOnly EventDate { get; set; }
         public string? ProfessionalName { get; set; }

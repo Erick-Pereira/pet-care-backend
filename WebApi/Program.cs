@@ -1,3 +1,5 @@
+using System.Reflection;
+using System.Text;
 using AspNetCoreRateLimit;
 using BLL.Validation;
 using DAL;
@@ -6,8 +8,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
-using System.Text;
 using web_api.Services;
 using WebApi.Extensions;
 
@@ -113,7 +113,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins", policy =>
     {
-        policy.WithOrigins("http://localhost:3000") // Substitua pela URL do frontend
+        policy.WithOrigins("http://localhost:4200") // Substitua pela URL do frontend
               .AllowAnyHeader()
               .AllowAnyMethod();
     });

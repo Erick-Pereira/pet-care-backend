@@ -1,7 +1,9 @@
+using System.Linq.Dynamic.Core;
 using Commons.Responses;
 using Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using BLL.ErrorHandling;
 
 namespace DAL.Impl
 {
@@ -26,7 +28,7 @@ namespace DAL.Impl
             }
             catch (Exception ex)
             {
-                return ResponseFactory.CreateFailedResponse(ex);
+                return ErrorHandler.Handle(ex);
             }
         }
 
@@ -40,7 +42,7 @@ namespace DAL.Impl
             }
             catch (Exception ex)
             {
-                return ResponseFactory.CreateFailedResponse(ex);
+                return ErrorHandler.Handle(ex);
             }
         }
 
@@ -63,7 +65,7 @@ namespace DAL.Impl
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error deleting entity {EntityId}.", id);
-                return ResponseFactory.CreateFailedResponse(ex);
+                return ErrorHandler.Handle(ex);
             }
         }
 
@@ -122,11 +124,18 @@ namespace DAL.Impl
             }
         }
 
-        public virtual async Task<DataResponse<T>> Get(int skip, int take)
+        public virtual async Task<DataResponse<T>> Get(int skip, int take, string? filter = null)
         {
             try
             {
-                var entities = await _dbContext.Set<T>().Skip(skip).Take(take).ToListAsync();
+                var query = _dbContext.Set<T>().AsQueryable();
+
+                if (!string.IsNullOrWhiteSpace(filter))
+                {
+                    query = query.Where(filter);
+                }
+
+                var entities = await query.Skip(skip).Take(take).ToListAsync();
                 return ResponseFactory.CreateInstance().CreateSuccessDataResponse(entities);
             }
             catch (Exception ex)

@@ -33,9 +33,9 @@ namespace BLL.Impl
             return await _unitOfWork.UserRepository.Get(id);
         }
 
-        public async Task<DataResponse<User>> Get(int skip, int take)
+        public async Task<DataResponse<User>> Get(int skip, int take, string? filter)
         {
-            return await _unitOfWork.UserRepository.Get(skip, take);
+            return await _unitOfWork.UserRepository.Get(skip, take, filter);
         }
 
         public async Task<Response> Insert(User item)
@@ -82,6 +82,26 @@ namespace BLL.Impl
         public async Task<SingleResponse<User>> GetByEmail(string email)
         {
             return await _unitOfWork.UserRepository.GetByEmail(email);
+        }
+
+        public async Task<Response> UpdateProfilePhoto(Guid userId, byte[] photoData)
+        {
+            var userResponse = await _unitOfWork.UserRepository.Get(userId);
+            if (!userResponse.Success.Value || userResponse.Item == null)
+                return ResponseFactory.CreateFailedResponse("User not found");
+
+            userResponse.Item.ProfilePhoto = photoData;
+            return await _unitOfWork.UserRepository.Update(userResponse.Item);
+        }
+
+        public async Task<Response> DeleteProfilePhoto(Guid userId)
+        {
+            var userResponse = await _unitOfWork.UserRepository.Get(userId);
+            if (!userResponse.Success.Value || userResponse.Item == null)
+                return ResponseFactory.CreateFailedResponse("User not found");
+
+            userResponse.Item.ProfilePhoto = null;
+            return await _unitOfWork.UserRepository.Update(userResponse.Item);
         }
     }
 }

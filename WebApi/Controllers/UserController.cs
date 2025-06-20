@@ -1,21 +1,17 @@
 ﻿using BLL.Interfaces;
 using Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using web_api.Services;
 
 namespace web_api.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    [Authorize]
-    public class StateController : ControllerBase, IController<State>
+    public class UserController : ControllerBase
     {
-        private readonly IStateService _stateService;
+        private readonly IUserService _userService;
 
-        public StateController(IStateService stateService)
+        public UserController(IUserService userService)
         {
-            _stateService = stateService ?? throw new ArgumentNullException(nameof(stateService));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
         [HttpGet]
@@ -23,7 +19,8 @@ namespace web_api.Controllers
         {
             try
             {
-                var response = await _stateService.Get(skip, take, filter);
+                var response = await _userService.Get(skip, take, filter);
+
                 return response.Success == true
                     ? Ok(new { response.Success, response.Message, response.Data })
                     : BadRequest(new { response.Success, response.Message });
@@ -39,7 +36,7 @@ namespace web_api.Controllers
         {
             try
             {
-                var response = await _stateService.Get(id);
+                var response = await _userService.Get(id);
                 return response.Success == true
                     ? Ok(new { response.Success, response.Message, Data = response.Item })
                     : BadRequest(new { response.Success, response.Message });
@@ -52,11 +49,11 @@ namespace web_api.Controllers
 
         [HttpPost]
         [Permission("Admin")]
-        public async Task<IActionResult> Create([FromBody] State request)
+        public async Task<IActionResult> Create([FromBody] User request)
         {
             try
             {
-                var response = await _stateService.Insert(request);
+                var response = await _userService.Insert(request);
                 return response.Success == true
                     ? Ok(new { response.Success, response.Message })
                     : BadRequest(new { response.Success, response.Message });
@@ -69,12 +66,12 @@ namespace web_api.Controllers
 
         [HttpPut("{id}")]
         [Permission("Admin")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] State request)
+        public async Task<IActionResult> Update(Guid id, [FromBody] User request)
         {
             try
             {
                 request.Id = id;
-                var response = await _stateService.Update(request);
+                var response = await _userService.Update(request);
                 return response.Success == true
                     ? Ok(new { response.Success, response.Message })
                     : BadRequest(new { response.Success, response.Message });
@@ -91,30 +88,9 @@ namespace web_api.Controllers
         {
             try
             {
-                var response = await _stateService.Delete(id);
+                var response = await _userService.Delete(id);
                 return response.Success == true
                     ? Ok(new { response.Success, response.Message })
-                    : BadRequest(new { response.Success, response.Message });
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, new { Success = false, Message = "Internal server error" });
-            }
-        }
-
-        [HttpPatch("{id}/toggle-active")]
-        [Permission("Admin")]
-        public async Task<IActionResult> ToggleActive(Guid id)
-        {
-            try
-            {
-                var response = await _stateService.ToggleActive(id);
-                return response.Success == true
-                    ? Ok(new
-                    {
-                        Success = true,
-                        response.Message
-                    })
                     : BadRequest(new { response.Success, response.Message });
             }
             catch (Exception)

@@ -1,10 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using Entities.Enums;
-using web_api.Models.User;
 
 namespace web_api.Models.Pet
 {
-    public class PetRegistrationDTO
+    public class PetWithoutOwnerRegistrationDTO
     {
         [Required(ErrorMessage = "")]
         [Display(Name = "Pet Name")]
@@ -44,9 +43,5 @@ namespace web_api.Models.Pet
 
         [Display(Name = "Chip Number")]
         public string? ChipNumber { get; set; }
-
-        [Required(ErrorMessage = "Please provide the owner's information")]
-        [Display(Name = "Owner")]
-        public UserRegistrationDTO owner { get; set; }
     }
 }

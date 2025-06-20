@@ -2,9 +2,9 @@
 {
     public class City : Entity
     {
-        public required string Name { get; set; }
+        public string Name { get; set; }
 
         public Guid StateId { get; set; }
-        public required State State { get; set; }
+        public State State { get; set; }
     }
 }

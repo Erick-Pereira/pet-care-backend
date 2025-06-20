@@ -12,12 +12,12 @@ namespace DAL.Impl
         {
         }
 
-        public async Task<SingleResponse<State>> FindByAbreviation(string abreviation)
+        public async Task<SingleResponse<State>> FindByAbbreviation(string abreviation)
         {
             try
             {
                 var state = await _dbContext.Set<State>()
-                    .FirstOrDefaultAsync(s => s.Abreviation.ToLower() == abreviation.ToLower());
+                    .FirstOrDefaultAsync(s => s.Abbreviation.ToLower() == abreviation.ToLower());
 
                 if (state == null)
                 {

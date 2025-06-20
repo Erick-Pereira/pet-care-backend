@@ -13,10 +13,10 @@ namespace BLL.Validation
                 .MaximumLength(StateConstants.NameMaxLength)
                     .WithMessage(string.Format(ValidationMessages.StateNameMaxLength, StateConstants.NameMaxLength));
 
-            RuleFor(state => state.Abreviation)
+            RuleFor(state => state.Abbreviation)
                 .NotEmpty().WithMessage(ValidationMessages.StateAbreviationEmpty)
-                .MaximumLength(StateConstants.AbreviationMaxLength)
-                    .WithMessage(string.Format(ValidationMessages.StateAbrevivationLength, StateConstants.AbreviationMaxLength));
+                .MaximumLength(StateConstants.AbbreviationMaxLength)
+                    .WithMessage(string.Format(ValidationMessages.StateAbrevivationLength, StateConstants.AbbreviationMaxLength));
         }
     }
 }

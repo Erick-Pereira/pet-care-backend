@@ -2,9 +2,9 @@ namespace Commons.Constants
 {
     public static class StateConstants
     {
-        public const int AbreviationMaxLength = 2;
+        public const int AbbreviationMaxLength = 2;
 
-        public const string AbreviationUniqueIndexName = "UQ_STATE_ABREVIATION";
+        public const string AbbreviationUniqueIndexName = "UQ_STATE_ABREVIATION";
 
         public const int NameMaxLength = 100;
 

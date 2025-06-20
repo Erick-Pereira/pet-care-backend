@@ -9,5 +9,9 @@ namespace BLL.Interfaces
         Task<Response> RegisterPetWithOwner(Pet request);
 
         Task<SingleResponse<Pet>> ToggleActive(Guid id);
+
+        Task<Response> UpdateProfilePhoto(Guid petId, byte[] photoData);
+
+        Task<Response> DeleteProfilePhoto(Guid petId);
     }
 }

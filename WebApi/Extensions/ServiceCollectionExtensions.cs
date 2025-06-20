@@ -1,7 +1,7 @@
+using System.Reflection;
 using BLL.Impl;
 using BLL.Validation;
 using DAL.Impl;
-using System.Reflection;
 
 namespace WebApi.Extensions
 {

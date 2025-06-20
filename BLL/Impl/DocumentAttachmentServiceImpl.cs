@@ -28,9 +28,9 @@ namespace BLL.Impl
             return await _unitOfWork.DocumentAttachmentRepository.Get(id);
         }
 
-        public async Task<DataResponse<DocumentAttachment>> Get(int skip, int take)
+        public async Task<DataResponse<DocumentAttachment>> Get(int skip, int take, string? filter)
         {
-            return await _unitOfWork.DocumentAttachmentRepository.Get(skip, take);
+            return await _unitOfWork.DocumentAttachmentRepository.Get(skip, take, filter);
         }
 
         public async Task<Response> Insert(DocumentAttachment item)

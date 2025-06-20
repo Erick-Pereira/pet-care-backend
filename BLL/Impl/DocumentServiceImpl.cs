@@ -28,9 +28,9 @@ namespace BLL.Impl
             return await _unitOfWork.DocumentRepository.Get(id);
         }
 
-        public async Task<DataResponse<Document>> Get(int skip, int take)
+        public async Task<DataResponse<Document>> Get(int skip, int take, string? filter)
         {
-            return await _unitOfWork.DocumentRepository.Get(skip, take);
+            return await _unitOfWork.DocumentRepository.Get(skip, take, filter);
         }
 
         public async Task<Response> Insert(Document item)
