@@ -69,11 +69,18 @@ namespace DAL.Impl
             }
         }
 
+        protected virtual IQueryable<T> AddIncludes(IQueryable<T> query)
+        {
+            return query;
+        }
+
         public virtual async Task<SingleResponse<T>> GetActive(Guid id)
         {
             try
             {
-                var entity = await _dbContext.Set<T>().AsNoTracking().FirstOrDefaultAsync(e => e.Id == id && e.Active == true);
+                var query = _dbContext.Set<T>().AsNoTracking();
+                query = AddIncludes(query);
+                var entity = await query.FirstOrDefaultAsync(e => e.Id == id && e.Active == true);
                 if (entity == null)
                 {
                     _logger.LogWarning("Get failed: Entity {EntityId} not found.", id);
@@ -94,7 +101,9 @@ namespace DAL.Impl
         {
             try
             {
-                var entities = await _dbContext.Set<T>().Where(e => e.Active == true).Skip(skip).Take(take).ToListAsync();
+                var query = _dbContext.Set<T>().Where(e => e.Active == true);
+                query = AddIncludes(query);
+                var entities = await query.Skip(skip).Take(take).ToListAsync();
                 return ResponseFactory.CreateInstance().CreateSuccessDataResponse(entities);
             }
             catch (Exception ex)
@@ -107,7 +116,9 @@ namespace DAL.Impl
         {
             try
             {
-                var entity = await _dbContext.Set<T>().AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
+                var query = _dbContext.Set<T>().AsNoTracking();
+                query = AddIncludes(query);
+                var entity = await query.FirstOrDefaultAsync(e => e.Id == id);
                 if (entity == null)
                 {
                     _logger.LogWarning("Get failed: Entity {EntityId} not found.", id);
@@ -129,7 +140,7 @@ namespace DAL.Impl
             try
             {
                 var query = _dbContext.Set<T>().AsQueryable();
-
+                query = AddIncludes(query);
                 if (!string.IsNullOrWhiteSpace(filter))
                 {
                     query = query.Where(filter);
