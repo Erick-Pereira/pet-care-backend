@@ -1,6 +1,6 @@
-﻿using Entities;
+﻿using System.Reflection;
+using Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 
 namespace DAL
 {

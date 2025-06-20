@@ -30,9 +30,9 @@ namespace BLL.Impl
             return await _unitOfWork.NeighborhoodRepository.Get(id);
         }
 
-        public async Task<DataResponse<Neighborhood>> Get(int skip, int take)
+        public async Task<DataResponse<Neighborhood>> Get(int skip, int take, string? filter)
         {
-            return await _unitOfWork.NeighborhoodRepository.Get(skip, take);
+            return await _unitOfWork.NeighborhoodRepository.Get(skip, take, filter);
         }
 
         public async Task<Response> Insert(Neighborhood item)

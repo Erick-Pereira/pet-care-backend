@@ -8,7 +8,7 @@ namespace Commons.Interfaces
 
         Task<SingleResponse<T>> Get(Guid id);
 
-        Task<DataResponse<T>> Get(int skip, int take);
+        Task<DataResponse<T>> Get(int skip, int take, string? filter);
 
         Task<Response> Update(T item);
 

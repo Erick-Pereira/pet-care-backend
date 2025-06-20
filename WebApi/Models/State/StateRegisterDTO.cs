@@ -5,6 +5,6 @@ namespace web_api.Models.State
     public class StateRegisterDTO
     {
         [Required]
-        public string Abreviation { get; set; }
+        public string Abbreviation { get; set; }
     }
 }

@@ -28,9 +28,9 @@ namespace BLL.Impl
             return await _unitOfWork.StateRepository.Get(id);
         }
 
-        public async Task<DataResponse<State>> Get(int skip, int take)
+        public async Task<DataResponse<State>> Get(int skip, int take, string? filter)
         {
-            return await _unitOfWork.StateRepository.Get(skip, take);
+            return await _unitOfWork.StateRepository.Get(skip, take, filter);
         }
 
         public async Task<Response> Insert(State item)
@@ -57,14 +57,14 @@ namespace BLL.Impl
             return await _unitOfWork.StateRepository.Update(item);
         }
 
-        public async Task<SingleResponse<State>> FindByAbreviation(string abreviation)
+        public async Task<SingleResponse<State>> FindByAbbreviation(string abbreviation)
         {
-            if (string.IsNullOrWhiteSpace(abreviation))
+            if (string.IsNullOrWhiteSpace(abbreviation))
             {
                 return ResponseFactory.CreateInstance().CreateFailedSingleResponse<State>("State abreviation cannot be empty");
             }
 
-            return await _unitOfWork.StateRepository.FindByAbreviation(abreviation);
+            return await _unitOfWork.StateRepository.FindByAbbreviation(abbreviation);
         }
 
         public async Task<SingleResponse<State>> ToggleActive(Guid id)

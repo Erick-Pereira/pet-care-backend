@@ -28,9 +28,9 @@ namespace BLL.Impl
             return await _unitOfWork.VaccineRepository.Get(id);
         }
 
-        public async Task<DataResponse<Vaccine>> Get(int skip, int take)
+        public async Task<DataResponse<Vaccine>> Get(int skip, int take, string? filter)
         {
-            return await _unitOfWork.VaccineRepository.Get(skip, take);
+            return await _unitOfWork.VaccineRepository.Get(skip, take, filter);
         }
 
         public async Task<Response> Insert(Vaccine item)

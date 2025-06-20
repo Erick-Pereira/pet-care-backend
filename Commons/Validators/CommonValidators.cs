@@ -1,6 +1,6 @@
-﻿using Commons.Constants;
+﻿using System.Text.RegularExpressions;
+using Commons.Constants;
 using Commons.Responses;
-using System.Text.RegularExpressions;
 
 namespace Commons.Validators
 {

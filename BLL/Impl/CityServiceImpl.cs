@@ -30,9 +30,9 @@ namespace BLL.Impl
             return await _unitOfWork.CityRepository.Get(id);
         }
 
-        public async Task<DataResponse<City>> Get(int skip, int take)
+        public async Task<DataResponse<City>> Get(int skip, int take, string? filter)
         {
-            return await _unitOfWork.CityRepository.Get(skip, take);
+            return await _unitOfWork.CityRepository.Get(skip, take, filter);
         }
 
         public async Task<Response> Insert(City item)
@@ -86,13 +86,13 @@ namespace BLL.Impl
             if (cityResponse.Success == true && cityResponse.Item != null)
             {
                 var stateResult = await _stateService.Get(cityResponse.Item.StateId);
-                if (stateResult.Item != null && city.State.Abreviation.ToLower() == stateResult.Item.Abreviation.ToLower())
+                if (stateResult.Item != null && city.State.Abbreviation.ToLower() == stateResult.Item.Abbreviation.ToLower())
                 {
                     return cityResponse;
                 }
             }
 
-            var stateResponse = await _stateService.FindByAbreviation(city.State.Abreviation);
+            var stateResponse = await _stateService.FindByAbbreviation(city.State.Abbreviation);
             if (!stateResponse.Success == true || stateResponse.Item == null)
                 return ResponseFactory.CreateInstance().CreateFailedSingleResponse<City>(stateResponse.Message ?? "State response message was null.");
 
@@ -118,14 +118,14 @@ namespace BLL.Impl
                 {
                     var stateResult = await _stateService.Get(cityResult.Item.StateId);
 
-                    if (stateResult.Item != null && city.State.Abreviation.ToLower() == stateResult.Item.Abreviation.ToLower())
+                    if (stateResult.Item != null && city.State.Abbreviation.ToLower() == stateResult.Item.Abbreviation.ToLower())
                     {
                         await _unitOfWork.CityRepository.Delete(city.Id);
                         return cityResult;
                     }
                 }
 
-                var stateResponse = await _stateService.FindByAbreviation(city.State.Abreviation);
+                var stateResponse = await _stateService.FindByAbbreviation(city.State.Abbreviation);
                 if (!stateResponse.Success == true || stateResponse.Item == null)
                 {
                     return ResponseFactory.CreateInstance().CreateFailedSingleResponse<City>(stateResponse.Message ?? "State response message was null.");
@@ -141,13 +141,13 @@ namespace BLL.Impl
                 if (cityResult.Success == true && cityResult.Item != null)
                 {
                     var stateResult = await _stateService.Get(cityResult.Item.StateId);
-                    if (stateResult.Item != null && city.State.Abreviation.Equals(stateResult.Item.Abreviation, StringComparison.CurrentCultureIgnoreCase))
+                    if (stateResult.Item != null && city.State.Abbreviation.Equals(stateResult.Item.Abbreviation, StringComparison.CurrentCultureIgnoreCase))
                     {
                         return cityResult;
                     }
                 }
 
-                var stateResponse = await _stateService.FindByAbreviation(city.State.Abreviation);
+                var stateResponse = await _stateService.FindByAbbreviation(city.State.Abbreviation);
                 if (!stateResponse.Success == true || stateResponse.Item == null)
                 {
                     return ResponseFactory.CreateInstance().CreateFailedSingleResponse<City>(stateResponse.Message ?? "State response message was null.");

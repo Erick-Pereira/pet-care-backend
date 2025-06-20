@@ -38,38 +38,6 @@ namespace web_api.Controllers
             return Ok(new { Token = token });
         }
 
-        //[HttpPost("login")]
-        //public async Task<IActionResult> Login([FromBody] LoginDto request)
-        //{
-        //    if (request.Username == "admin" && request.Password == "password")
-        //    {
-        //        var user = new User
-        //        {
-        //            FullName = "Administrator",
-        //            Email = request.Username,
-        //            PermissionLevel = "Admin" // You can set different permission levels
-        //        };
-
-        //        var token = _jwtService.GenerateToken(user);
-        //        return Ok(new { Token = token });
-        //    }
-
-        //    if (request.Username == "user" && request.Password == "password")
-        //    {
-        //        var user = new User
-        //        {
-        //            FullName = "user",
-        //            Email = request.Username,
-        //            PermissionLevel = "User"
-        //        };
-
-        //        var token = _jwtService.GenerateToken(user);
-        //        return Ok(new { Token = token });
-        //    }
-
-        //    return Unauthorized("Invalid username or password.");
-        //}
-
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] User request)
         {

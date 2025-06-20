@@ -1,3 +1,5 @@
+using BLL.Interfaces;
+using BLL.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,47 +10,82 @@ namespace WebApi.Controllers
     [Authorize]
     public class PhotoController : ControllerBase
     {
-        /*private readonly IPhotoService _photoService;
+        private readonly IPetPhotoService _petPhotoService;
+        private readonly IPetService _petService;
+        private readonly IUserService _userService;
         private readonly FileValidator _fileValidator;
 
-        [HttpPut("user/{id}/profile")]
-        public async Task<IActionResult> UpdateUserProfilePhoto(Guid id, IFormFile photo)
+        public PhotoController(IPetPhotoService petPhotoService, IPetService petService, IUserService userService, FileValidator fileValidator)
+        {
+            _petPhotoService = petPhotoService;
+            _petService = petService;
+            _userService = userService;
+            _fileValidator = fileValidator;
+        }
+
+        private async Task<byte[]> GetBytesFromFormFileAsync(IFormFile file)
+        {
+            using var ms = new MemoryStream();
+            await file.CopyToAsync(ms);
+            return ms.ToArray();
+        }
+
+        // PET PROFILE PHOTO
+        [HttpPut("pet/{petId}/profile")]
+        public async Task<IActionResult> UpdatePetProfilePhoto(Guid petId, IFormFile photo)
         {
             var validation = await _fileValidator.ValidateAsync(photo);
             if (!validation.IsValid)
                 return BadRequest(validation.Errors);
-
-            var result = await _photoService.UpdateUserProfilePhoto(id, photo);
-            return result.Success ? Ok(result) : BadRequest(result);
+            var bytes = await GetBytesFromFormFileAsync(photo);
+            var result = await _petService.UpdateProfilePhoto(petId, bytes);
+            return result.Success.Value ? Ok(result) : BadRequest(result);
         }
 
-        [HttpPut("pet/{id}/profile")]
-        public async Task<IActionResult> UpdatePetProfilePhoto(Guid id, IFormFile photo)
+        // USER PROFILE PHOTO
+        [HttpPut("user/{userId}/profile")]
+        public async Task<IActionResult> UpdateUserProfilePhoto(Guid userId, IFormFile photo)
         {
             var validation = await _fileValidator.ValidateAsync(photo);
             if (!validation.IsValid)
                 return BadRequest(validation.Errors);
-
-            var result = await _photoService.UpdatePetProfilePhoto(id, photo);
-            return result.Success ? Ok(result) : BadRequest(result);
+            var bytes = await GetBytesFromFormFileAsync(photo);
+            var result = await _userService.UpdateProfilePhoto(userId, bytes);
+            return result.Success.Value ? Ok(result) : BadRequest(result);
         }
 
-        [HttpPost("pet/{id}/photos")]
-        public async Task<IActionResult> AddPetPhoto(Guid id, IFormFile photo)
+        // PET GALLERY PHOTOS
+        [HttpPost("pet/{petId}/photos")]
+        public async Task<IActionResult> AddPetPhoto(Guid petId, IFormFile photo, [FromForm] string? description)
         {
             var validation = await _fileValidator.ValidateAsync(photo);
             if (!validation.IsValid)
                 return BadRequest(validation.Errors);
-
-            var result = await _photoService.AddPetPhoto(id, photo);
-            return result.Success ? Ok(result) : BadRequest(result);
+            var bytes = await GetBytesFromFormFileAsync(photo);
+            var result = await _petPhotoService.AddPetPhoto(petId, bytes, description);
+            return result.Success.Value ? Ok(result) : BadRequest(result);
         }
 
-        [HttpDelete("pet/photos/{photoId}")]
-        public async Task<IActionResult> DeletePetPhoto(Guid photoId)
+        [HttpPut("pet/{petId}/photos/{photoId}")]
+        public async Task<IActionResult> UpdatePetPhoto(Guid petId, Guid photoId, IFormFile? photo, [FromForm] string? description)
         {
-            var result = await _photoService.DeletePetPhoto(photoId);
-            return result.Success ? Ok(result) : BadRequest(result);
-        }*/
+            byte[]? bytes = null;
+            if (photo != null)
+            {
+                var validation = await _fileValidator.ValidateAsync(photo);
+                if (!validation.IsValid)
+                    return BadRequest(validation.Errors);
+                bytes = await GetBytesFromFormFileAsync(photo);
+            }
+            var result = await _petPhotoService.UpdatePetPhoto(petId, photoId, bytes, description);
+            return result.Success.Value ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpDelete("pet/{petId}/photos/{photoId}")]
+        public async Task<IActionResult> DeletePetPhoto(Guid petId, Guid photoId)
+        {
+            var result = await _petPhotoService.Delete(photoId);
+            return result.Success.Value ? Ok(result) : BadRequest(result);
+        }
     }
 }

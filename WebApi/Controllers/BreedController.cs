@@ -1,6 +1,5 @@
 ﻿using BLL.Interfaces;
 using Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using web_api.Services;
 
@@ -8,7 +7,6 @@ namespace web_api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class BreedController : ControllerBase, IController<Breed>
     {
         private readonly IBreedService _breedService;
@@ -19,11 +17,11 @@ namespace web_api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 100)
+        public async Task<IActionResult> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 100, [FromQuery] string? filter = null)
         {
             try
             {
-                var response = await _breedService.Get(skip, take);
+                var response = await _breedService.Get(skip, take, filter);
                 return response.Success == true
                     ? Ok(new { response.Success, response.Message, response.Data })
                     : BadRequest(new { response.Success, response.Message });

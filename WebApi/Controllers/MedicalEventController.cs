@@ -48,5 +48,34 @@ namespace WebApi.Controllers
             var result = await _medicalEventService.AddMedication(eventId, medication);
             return result.Success ? Ok(result) : BadRequest(result);
         }*/
+
+        //[HttpGet("{id}")]
+        //public async Task<IActionResult> Get(Guid id)
+        //{
+        //    var result = await _medicalEventService.Get(id);
+        //    return result.Success ? Ok(result) : NotFound(result);
+        //}
+
+        //[HttpGet]
+        //public async Task<IActionResult> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 50, [FromQuery] string? filter = null)
+        //{
+        //    var result = await _medicalEventService.Get(skip, take, filter);
+        //    return Ok(result);
+        //}
+
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> Update(Guid id, [FromBody] MedicalEvent medicalEvent)
+        //{
+        //    medicalEvent.Id = id;
+        //    var result = await _medicalEventService.Update(medicalEvent);
+        //    return result.Success ? Ok(result) : BadRequest(result);
+        //}
+
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> Delete(Guid id)
+        //{
+        //    var result = await _medicalEventService.Delete(id);
+        //    return result.Success ? Ok(result) : BadRequest(result);
+        //}
     }
 }

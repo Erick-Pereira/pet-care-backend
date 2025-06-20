@@ -15,14 +15,14 @@ namespace DAL.Mapping
                 .IsRequired()
                 .HasMaxLength(StateConstants.NameMaxLength);
 
-            builder.Property(s => s.Abreviation)
+            builder.Property(s => s.Abbreviation)
                 .IsRequired()
-                .HasMaxLength(StateConstants.AbreviationMaxLength)
+                .HasMaxLength(StateConstants.AbbreviationMaxLength)
                 .IsUnicode(false);
 
-            builder.HasIndex(s => s.Abreviation)
+            builder.HasIndex(s => s.Abbreviation)
                 .IsUnique()
-                .HasDatabaseName(StateConstants.AbreviationUniqueIndexName);
+                .HasDatabaseName(StateConstants.AbbreviationUniqueIndexName);
 
             builder.HasIndex(s => s.Name)
                 .IsUnique()

@@ -1,6 +1,6 @@
-﻿using Commons.Responses;
+﻿using System.Text;
+using Commons.Responses;
 using FluentValidation.Results;
-using System.Text;
 
 namespace Commons.Extensions
 {

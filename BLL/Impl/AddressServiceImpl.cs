@@ -30,9 +30,9 @@ namespace BLL.Impl
             return await _unitOfWork.AddressRepository.Get(id);
         }
 
-        public async Task<DataResponse<Address>> Get(int skip, int take)
+        public async Task<DataResponse<Address>> Get(int skip, int take, string? filter)
         {
-            return await _unitOfWork.AddressRepository.Get(skip, take);
+            return await _unitOfWork.AddressRepository.Get(skip, take, filter);
         }
 
         public async Task<Response> Insert(Address item)

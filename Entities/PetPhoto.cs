@@ -6,6 +6,6 @@ namespace Entities
         public string? Description { get; set; }
         public DateTime Date { get; set; } = DateTime.UtcNow;
         public Guid PetId { get; set; }
-        public required Pet Pet { get; set; }
+        public Pet Pet { get; set; }
     }
 }

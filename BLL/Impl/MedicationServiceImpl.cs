@@ -28,9 +28,9 @@ namespace BLL.Impl
             return await _unitOfWork.MedicationRepository.Get(id);
         }
 
-        public async Task<DataResponse<Medication>> Get(int skip, int take)
+        public async Task<DataResponse<Medication>> Get(int skip, int take, string? filter)
         {
-            return await _unitOfWork.MedicationRepository.Get(skip, take);
+            return await _unitOfWork.MedicationRepository.Get(skip, take, filter);
         }
 
         public async Task<DataResponse<Medication>> GetByMedicalEventId(Guid medicalEventId)

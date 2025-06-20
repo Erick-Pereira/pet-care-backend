@@ -36,9 +36,9 @@ namespace BLL.Impl
             return await _unitOfWork.PetRepository.Get(id);
         }
 
-        public async Task<DataResponse<Pet>> Get(int skip, int take)
+        public async Task<DataResponse<Pet>> Get(int skip, int take, string? filter)
         {
-            return await _unitOfWork.PetRepository.Get(skip, take);
+            return await _unitOfWork.PetRepository.Get(skip, take, filter);
         }
 
         public async Task<Response> Insert(Pet item)
@@ -135,6 +135,26 @@ namespace BLL.Impl
             {
                 return ResponseFactory.CreateInstance().CreateFailedSingleResponse<Pet>("Error toggling pet status", ex);
             }
+        }
+
+        public async Task<Response> UpdateProfilePhoto(Guid petId, byte[] photoData)
+        {
+            var petResponse = await _unitOfWork.PetRepository.Get(petId);
+            if (!petResponse.Success.Value || petResponse.Item == null)
+                return ResponseFactory.CreateFailedResponse("Pet not found");
+
+            petResponse.Item.ProfilePhoto = photoData;
+            return await _unitOfWork.PetRepository.Update(petResponse.Item);
+        }
+
+        public async Task<Response> DeleteProfilePhoto(Guid petId)
+        {
+            var petResponse = await _unitOfWork.PetRepository.Get(petId);
+            if (!petResponse.Success.Value || petResponse.Item == null)
+                return ResponseFactory.CreateFailedResponse("Pet not found");
+
+            petResponse.Item.ProfilePhoto = null;
+            return await _unitOfWork.PetRepository.Update(petResponse.Item);
         }
     }
 }

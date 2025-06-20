@@ -6,8 +6,8 @@ namespace web_api.Profiles
     {
         public AddressProfile()
         {
-        CreateMap<Entities.Address, Models.Address.AddressRegistrationDTO>();
-        CreateMap<Models.Address.AddressRegistrationDTO, Entities.Address>();
+            CreateMap<Entities.Address, Models.Address.AddressRegistrationDTO>();
+            CreateMap<Models.Address.AddressRegistrationDTO, Entities.Address>();
         }
     }
 }

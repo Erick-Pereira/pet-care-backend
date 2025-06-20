@@ -7,7 +7,7 @@ namespace BLL.ErrorHandling
     {
         public static Response Handle(Exception error)
         {
-            if (error.Message.Contains(UserConstants.EmailUniqueIndexName))
+            if (error.InnerException.Message.Contains(UserConstants.EmailUniqueIndexName))
             {
                 return ResponseFactory.CreateFailedResponse("Error when registering the user, because the email is already in use.");
             }
