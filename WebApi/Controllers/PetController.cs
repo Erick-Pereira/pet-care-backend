@@ -2,10 +2,12 @@ using AutoMapper;
 using BLL.Interfaces;
 using Commons.Extensions;
 using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using web_api.Controllers;
 using web_api.Models.Pet;
 using web_api.Services;
+using WebApi.Extensions;
 
 namespace WebApi.Controllers
 {
@@ -149,22 +151,20 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("registerPet")]
+        [Authorize]
         public async Task<IActionResult> RegisterPet([FromBody] PetWithoutOwnerRegistrationDTO request)
         {
             try
             {
-                var email = User.Claims.FirstOrDefault(c =>
-                    c.Type == System.Security.Claims.ClaimTypes.Email ||
-                    c.Type == "email")?.Value;
+                var email = User.GetEmailFromToken();
 
                 if (string.IsNullOrEmpty(email))
                 {
                     return Unauthorized(new { Success = false, Message = "Email not found in token." });
                 }
 
-                // Now you can get the user by email (assuming you have a user service)
                 var userResponse = await _userService.GetByEmail(email);
-                if (!userResponse.Success.Value || userResponse.Item == null)
+                if (!(userResponse.Success ?? false) || userResponse.Item == null)
                 {
                     return NotFound(new { Success = false, Message = "User not found." });
                 }

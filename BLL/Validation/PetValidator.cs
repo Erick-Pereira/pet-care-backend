@@ -18,7 +18,7 @@ namespace BLL.Validation
                 .NotNull().WithMessage(ValidationMessages.SpecieRequired);
 
             RuleFor(pet => pet.Gender)
-                .NotEmpty().WithMessage(ValidationMessages.GenderRequired)
+                .NotNull().WithMessage(ValidationMessages.GenderRequired)
                 .Must(gender => gender.Equals(Gender.Male) || gender.Equals(Gender.Female))
                 .WithMessage(ValidationMessages.GenderInvalid);
 
