@@ -1,7 +1,7 @@
 using DAL.Interfaces;
 using Entities;
-using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DAL.Impl
 {

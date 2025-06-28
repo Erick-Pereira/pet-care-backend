@@ -1,9 +1,9 @@
 using System.Linq.Dynamic.Core;
+using BLL.ErrorHandling;
 using Commons.Responses;
 using Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using BLL.ErrorHandling;
 
 namespace DAL.Impl
 {

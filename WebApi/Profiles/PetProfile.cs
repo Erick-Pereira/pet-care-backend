@@ -8,6 +8,8 @@ namespace web_api.Profiles
         {
             CreateMap<Entities.Pet, Models.Pet.PetRegistrationDTO>();
             CreateMap<Models.Pet.PetRegistrationDTO, Entities.Pet>();
+            CreateMap<Models.Pet.PetWithoutOwnerRegistrationDTO, Entities.Pet>();
+            CreateMap<Entities.Pet, Models.Pet.PetWithoutOwnerRegistrationDTO>();
         }
     }
 }
